@@ -30,6 +30,9 @@ class MainWindow : public QMainWindow {
     QHBoxLayout* bottom_layout;
 
 
+    void showContextMenu(const QPoint& pos);
+
+
     Manager manager;
 
     bool isPrivate = false;

@@ -111,7 +111,6 @@ MainWindow::MainWindow(QWidget* parent)
             &MainWindow::AddToDoListHelper);
     connect(drawingAction, &QAction::triggered, this,
             &MainWindow::AddDrawingHelper);*/
-
     if (manager.number_of_item > 0) {
         buttons_layout->addStretch();
     }
@@ -127,6 +126,12 @@ MainWindow::MainWindow(QWidget* parent)
             buttons_layout->insertWidget(buttons_layout->count() - 1, button);
             manager.AddNoteToManager(button);
 
+
+            button->setContextMenuPolicy(Qt::CustomContextMenu);
+            connect(button, &QPushButton::customContextMenuRequested, this,
+                    &MainWindow::showContextMenu);
+
+
             connect(button, &QPushButton::clicked, this, [this, i]() {
                 manager.OpenFileWithContent(QString::number(i) + "data.txt");
             });
@@ -137,6 +142,54 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow() {
     delete ui;
+}
+
+void MainWindow::showContextMenu(const QPoint& pos) {
+    QPushButton* button = qobject_cast<QPushButton*>(sender());
+    if (!button)
+        return;
+
+    QMenu contextMenu(this);
+
+    // Установка стиля для меню
+    contextMenu.setStyleSheet(
+        "QMenu {"
+        "    background-color: transparent;"  // Прозрачный фон самого меню
+        "    padding: 5px;"					  // Отступ вокруг всего меню
+        "}"
+        ""
+
+        "QMenu::item {"
+        "    background-color: #008000;"   // Зелёный цвет фона
+        "    border: 2px solid #45a049;"   // Контур
+        "    border-radius: 15px;"		   // Сильное закругление
+        "    margin: 4px 2px;"			   // Вертикальные отступы
+        "    padding: 8px 20px 8px 15px;"  // Внутренние отступы
+        "    min-width: 100px;"			   // Минимальная ширина
+        "    font-size: 17px;"			   // Размер шрифта
+        "    text-align: left;"
+        "    color: white;"	 // Цвет текста
+        "}"
+        ""
+
+        "QMenu::item:selected {"
+        "    background-color: #006400;"  // Темнее при выборе
+        "    border: 2px solid #2d7d32;"  // Контур при выборе
+        "}"
+        ""
+
+        "QMenu::item:pressed {"
+        "    background-color: #004d00;"  // Ещё темнее при нажатии
+        "}");
+
+    // Добавление действий
+    QAction* deleteAction = contextMenu.addAction("delete");
+
+    // Отображаем меню и обрабатываем выбор
+    QAction* selectedAction = contextMenu.exec(button->mapToGlobal(pos));
+    if (selectedAction == deleteAction) {
+        qDebug() << "Удалить:" << button->text();
+    }
 }
 
 void MainWindow::PrivateClick() {
@@ -189,6 +242,11 @@ void MainWindow::AddNoteHelper() {
     connect(button, &QPushButton::clicked, this, [this, currentNumber]() {
         manager.OpenFileWithContent(QString::number(currentNumber));
     });
+
+    button->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(button, &QPushButton::customContextMenuRequested, this,
+            &MainWindow::showContextMenu);
+
     manager.CreateFile(currentNumber);
     manager.number_of_item++;
     //manager.print();

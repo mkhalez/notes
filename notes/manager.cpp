@@ -1,5 +1,6 @@
 #include "manager.h"
 #include <QDir>
+#include <QTextStream>
 
 Manager::Manager() {
     QString folderPath = "data_of_user";
@@ -10,14 +11,51 @@ Manager::Manager() {
     if (!dir.exists()) {
         dir.mkpath(".");
     }
+
+    folderPath = "data_of_program";
+    QDir dir_for_program(folderPath);
+
+    if (!dir_for_program.exists()) {
+        dir_for_program.mkpath(".");
+    }
+
+    QString maxNotePath = dir_for_program.filePath("max_note.txt");
+    // Проверяем существование файла
+    QFile maxNoteFile(maxNotePath);
+    if (maxNoteFile.exists()) {
+        if (maxNoteFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(&maxNoteFile);
+            QString firstLine = in.readLine();	// Читаем первую строку
+            int value = firstLine.toInt();
+            number_of_item = value;
+            maxNoteFile.close();
+        }
+    } else {
+        number_of_item = 0;
+    }
+}
+
+Manager::~Manager() {
+    QDir dir("data_of_program");
+
+    QString filePath = dir.filePath("max_note.txt");
+
+    QFile file(filePath);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream out(&file);
+        out << QString::number(number_of_item);
+        file.close();
+    } else {
+        qWarning() << "Не удалось создать файл:" << filePath;
+    }
 }
 
 void Manager::AddNoteToManager(QPushButton* note) {
     notes.push_back(note);
 }
 
-QStringList Manager::getFilesInDirectory(const QString& folderPath) {
-    QDir dir(folderPath);
+/*QStringList Manager::getListFilesInDirectory() {
+    QDir dir("data_of_user");
     QStringList files;
 
     // Устанавливаем фильтр: только файлы (не папки)
@@ -27,10 +65,55 @@ QStringList Manager::getFilesInDirectory(const QString& folderPath) {
     files = dir.entryList();
 
     return files;
-}
+}*/
 
 void Manager::OpenFileWithContent(QString name_of_file) {
     qDebug() << name_of_file;
+}
+
+void Manager::CreateFile(int number) {
+    QDir dir("data_of_user");
+
+    QString filePath = dir.filePath(QString::number(number) + "data.txt");
+
+    QFile file(filePath);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream out(&file);
+        out << "0";
+        file.close();
+    } else {
+        qWarning() << "Не удалось создать файл:" << filePath;
+    }
+}
+
+bool Manager::DoHaveFile(QString folder_path, QString name_of_file) {
+    QDir dir_for_program(folder_path);
+
+    QString maxNotePath = dir_for_program.filePath(name_of_file);
+    // Проверяем существование файла
+    QFile maxNoteFile(maxNotePath);
+    if (maxNoteFile.exists()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+int Manager::ReadFirstLine(QString folder_path, QString name_of_file) {
+    QDir dir_for_program(folder_path);
+    QString maxNotePath = dir_for_program.filePath(folder_path);
+    // Проверяем существование файла
+    QFile maxNoteFile(maxNotePath);
+    if (maxNoteFile.exists()) {
+        if (maxNoteFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(&maxNoteFile);
+            QString firstLine = in.readLine();	// Читаем первую строку
+            int value = firstLine.toInt();
+            return value;
+        }
+    } else {
+        return 0;
+    }
 }
 
 

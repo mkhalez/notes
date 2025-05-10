@@ -13,7 +13,6 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), manager() {
     ui->setupUi(this);
 
-
     main_container = new QWidget(this);
     main_layout = new QVBoxLayout(main_container);
 
@@ -112,6 +111,28 @@ MainWindow::MainWindow(QWidget* parent)
             &MainWindow::AddToDoListHelper);
     connect(drawingAction, &QAction::triggered, this,
             &MainWindow::AddDrawingHelper);*/
+
+    if (manager.number_of_item > 0) {
+        buttons_layout->addStretch();
+    }
+
+
+    for (int i = 0; i < manager.number_of_item; i++) {
+        if (manager.DoHaveFile("data_of_user",
+                               QString::number(i) + "data.txt")) {
+
+
+            QPushButton* button =
+                new QPushButton(QString("New Note"), buttons_container);
+            buttons_layout->insertWidget(buttons_layout->count() - 1, button);
+            manager.AddNoteToManager(button);
+
+            connect(button, &QPushButton::clicked, this, [this, i]() {
+                manager.OpenFileWithContent(QString::number(i) + "data.txt");
+            });
+            //manager.print();
+        }
+    }
 }
 
 MainWindow::~MainWindow() {
@@ -168,6 +189,7 @@ void MainWindow::AddNoteHelper() {
     connect(button, &QPushButton::clicked, this, [this, currentNumber]() {
         manager.OpenFileWithContent(QString::number(currentNumber));
     });
+    manager.CreateFile(currentNumber);
     manager.number_of_item++;
     //manager.print();
 }

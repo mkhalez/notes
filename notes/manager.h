@@ -6,10 +6,14 @@
 class Manager {
    public:
     Manager();
+    ~Manager();
     void AddNoteToManager(QPushButton* note);
     size_t number_of_item = 0;
-    QStringList getFilesInDirectory(const QString& folderPath);
+    QStringList getListFilesInDirectory();
     void OpenFileWithContent(QString name_of_file);
+    void CreateFile(int number);
+    bool DoHaveFile(QString folder_path, QString name_of_file);
+    int ReadFirstLine(QString folder_path, QString name_of_file);
     /*void AddToDoListToManager(QPushButton* to_do_list);
     void AddDRrawingToManager(QPushButton* draw);*/
     /*void print();*/

@@ -2,6 +2,7 @@
 #include <QDir>
 #include <QTextStream>
 
+
 Manager::Manager() {
     QString folder_path = "data_of_user";
 
@@ -21,8 +22,8 @@ Manager::Manager() {
     }
 }
 
-void Manager::AddNoteToManager(QPushButton* note) {
-    notes.push_back(note);
+void Manager::AddNoteToManager(QPushButton* note, QString name_of_file) {
+    notes.insert(std::make_pair(note, name_of_file));
 }
 
 /*QStringList Manager::getListFilesInDirectory() {
@@ -38,8 +39,21 @@ void Manager::AddNoteToManager(QPushButton* note) {
     return files;
 }*/
 
-void Manager::OpenFileWithContent(QString name_of_file) {
-    qDebug() << name_of_file;
+/*void Manager::OpenFileWithContent(QPushButton* button) {
+    if (is_open_button[button]) {
+        return;
+    }
+
+    dialog = new dialogfornote();
+    is_open_button[button] = true;
+    dialog->show();
+}*/
+
+void Manager::FillIsOpenButton(QPushButton* button, bool value = false) {
+    QDir dir("data_of_user");
+    dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
+    QStringList files = dir.entryList();
+    is_open_button.insert(std::make_pair(button, value));
 }
 
 void Manager::CreateFile(int number) {
@@ -101,6 +115,10 @@ QStringList Manager::GetListOfFileByCreationTime(const QString& directoryPath) {
     }
 
     return fileNames;
+}
+
+QString Manager::GetNameOfFileThanksPtr(QPushButton* ptr) {
+    return notes[ptr];
 }
 
 void Manager::DeleteFile(const QString& folderPath, const QString& fileName) {

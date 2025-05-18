@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QVBoxLayout>
+#include "dialogfornote.h"
 #include "manager.h"
 
 QT_BEGIN_NAMESPACE
@@ -28,6 +29,7 @@ class MainWindow : public QMainWindow {
     QWidget* buttons_container;
     QVBoxLayout* buttons_layout;
     QHBoxLayout* bottom_layout;
+    dialogfornote* dialog;
 
 
     void showContextMenu(const QPoint& pos);
@@ -47,6 +49,7 @@ class MainWindow : public QMainWindow {
     void PrivateClick();
     void AddClick();
     void AddNoteHelper();
+    void OpenFileWithContent(QPushButton* button);
     /*void AddToDoListHelper();
     void AddDrawingHelper();*/
 };

@@ -121,16 +121,18 @@ MainWindow::MainWindow(QWidget* parent)
         QPushButton* button =
             new QPushButton(QString("New Note"), buttons_container);
         buttons_layout->insertWidget(buttons_layout->count() - 1, button);
-        manager.AddNoteToManager(button);
+        manager.AddNoteToManager(button, manager.list_of_user_files[i]);
 
 
         button->setContextMenuPolicy(Qt::CustomContextMenu);
         connect(button, &QPushButton::customContextMenuRequested, this,
                 &MainWindow::showContextMenu);
 
-        connect(button, &QPushButton::clicked, this, [this, i]() {
-            manager.OpenFileWithContent(manager.list_of_user_files[i]);
-        });
+        connect(button, &QPushButton::clicked, this,
+                [this, button]() { OpenFileWithContent(button); });
+        /*(button, &QPushButton::clicked, this,
+                [this, button]() { manager.OpenFileWithContent(button); });*/
+        manager.FillIsOpenButton(button, false);
     }
 
     /*for (int i = 0; i < manager.number_of_item; i++) {
@@ -214,10 +216,8 @@ void MainWindow::showContextMenu(const QPoint& pos) {
             // 3. Удалить саму кнопку
             button->deleteLater();
 
-            manager.DeleteFile("data_of_user",
-                               QString::number(buttonIndex) + "data.txt");
-            qDebug() << "----------";
-            qDebug() << QString::number(buttonIndex) + "data.txt";
+            QString name_of_file = manager.GetNameOfFileThanksPtr(button);
+            manager.DeleteFile("data_of_user", name_of_file);
         }
     }
 }
@@ -266,21 +266,43 @@ void MainWindow::AddNoteHelper() {
     QPushButton* button =
         new QPushButton(QString("New Note"), buttons_container);
     buttons_layout->insertWidget(buttons_layout->count() - 1, button);
-    manager.AddNoteToManager(button);
+
     int currentNumber = manager.number_of_item;
     currentNumber++;
 
-    connect(button, &QPushButton::clicked, this, [this, currentNumber]() {
-        manager.OpenFileWithContent(QString::number(currentNumber));
-    });
+    manager.AddNoteToManager(button,
+                             QString::number(currentNumber) + "data.txt");
+
+    connect(button, &QPushButton::clicked, this,
+            [this, button]() { OpenFileWithContent(button); });
+    /*connect(button, &QPushButton::clicked, this,
+            [this, button]() { manager.OpenFileWithContent(button); });*/
 
     button->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(button, &QPushButton::customContextMenuRequested, this,
             &MainWindow::showContextMenu);
+    manager.FillIsOpenButton(button, false);
 
     manager.CreateFile(currentNumber);
     manager.number_of_item++;
     //manager.print();
+}
+
+void MainWindow::OpenFileWithContent(QPushButton* button) {
+    if (manager.is_open_button[button]) {
+        return;
+    }
+
+    dialog = new dialogfornote();
+    manager.is_open_button[button] = true;
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->show();
+    dialog->button = button;
+    Manager* ptr = &manager;
+    dialog->SetManager(ptr);
+
+    connect(dialog, &dialogfornote::destroyed, this,
+            [this, button]() { manager.is_open_button[button] = false; });
 }
 
 /*void MainWindow::AddToDoListHelper() {

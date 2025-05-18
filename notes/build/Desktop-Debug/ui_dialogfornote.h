@@ -15,8 +15,8 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTextEdit>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -25,16 +25,13 @@ class Ui_dialogfornote
 {
 public:
     QGridLayout *gridLayout;
-    QLineEdit *lineEdit;
+    QVBoxLayout *verticalLayout;
+    QLineEdit *titleEdit;
     QTextEdit *textEdit;
-    QHBoxLayout *horizontalLayout_3;
-    QHBoxLayout *horizontalLayout_2;
     QHBoxLayout *horizontalLayout;
-    QPushButton *pushButton;
-    QSpacerItem *horizontalSpacer;
-    QPushButton *pushButton_2;
-    QSpacerItem *horizontalSpacer_2;
-    QPushButton *pushButton_3;
+    QPushButton *underlinedButton;
+    QPushButton *redButton;
+    QPushButton *crossOutButton;
 
     void setupUi(QWidget *dialogfornote)
     {
@@ -43,53 +40,45 @@ public:
         dialogfornote->resize(400, 300);
         gridLayout = new QGridLayout(dialogfornote);
         gridLayout->setObjectName("gridLayout");
-        lineEdit = new QLineEdit(dialogfornote);
-        lineEdit->setObjectName("lineEdit");
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setObjectName("verticalLayout");
+        titleEdit = new QLineEdit(dialogfornote);
+        titleEdit->setObjectName("titleEdit");
 
-        gridLayout->addWidget(lineEdit, 0, 0, 1, 1);
+        verticalLayout->addWidget(titleEdit);
 
         textEdit = new QTextEdit(dialogfornote);
         textEdit->setObjectName("textEdit");
 
-        gridLayout->addWidget(textEdit, 1, 0, 1, 1);
+        verticalLayout->addWidget(textEdit);
 
-        horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setObjectName("horizontalLayout_3");
-        horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setObjectName("horizontalLayout_2");
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName("horizontalLayout");
-        pushButton = new QPushButton(dialogfornote);
-        pushButton->setObjectName("pushButton");
+        underlinedButton = new QPushButton(dialogfornote);
+        underlinedButton->setObjectName("underlinedButton");
+        QFont font;
+        font.setPointSize(18);
+        underlinedButton->setFont(font);
 
-        horizontalLayout->addWidget(pushButton);
+        horizontalLayout->addWidget(underlinedButton);
 
-        horizontalSpacer = new QSpacerItem(138, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        redButton = new QPushButton(dialogfornote);
+        redButton->setObjectName("redButton");
+        redButton->setFont(font);
 
-        horizontalLayout->addItem(horizontalSpacer);
+        horizontalLayout->addWidget(redButton);
 
-        pushButton_2 = new QPushButton(dialogfornote);
-        pushButton_2->setObjectName("pushButton_2");
+        crossOutButton = new QPushButton(dialogfornote);
+        crossOutButton->setObjectName("crossOutButton");
+        crossOutButton->setFont(font);
 
-        horizontalLayout->addWidget(pushButton_2);
-
-
-        horizontalLayout_2->addLayout(horizontalLayout);
-
-        horizontalSpacer_2 = new QSpacerItem(118, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_2->addItem(horizontalSpacer_2);
-
-
-        horizontalLayout_3->addLayout(horizontalLayout_2);
-
-        pushButton_3 = new QPushButton(dialogfornote);
-        pushButton_3->setObjectName("pushButton_3");
-
-        horizontalLayout_3->addWidget(pushButton_3);
+        horizontalLayout->addWidget(crossOutButton);
 
 
-        gridLayout->addLayout(horizontalLayout_3, 2, 0, 1, 1);
+        verticalLayout->addLayout(horizontalLayout);
+
+
+        gridLayout->addLayout(verticalLayout, 0, 0, 1, 1);
 
 
         retranslateUi(dialogfornote);
@@ -100,9 +89,9 @@ public:
     void retranslateUi(QWidget *dialogfornote)
     {
         dialogfornote->setWindowTitle(QCoreApplication::translate("dialogfornote", "Form", nullptr));
-        pushButton->setText(QCoreApplication::translate("dialogfornote", "PushButton", nullptr));
-        pushButton_2->setText(QCoreApplication::translate("dialogfornote", "PushButton", nullptr));
-        pushButton_3->setText(QCoreApplication::translate("dialogfornote", "PushButton", nullptr));
+        underlinedButton->setText(QCoreApplication::translate("dialogfornote", "A", nullptr));
+        redButton->setText(QCoreApplication::translate("dialogfornote", "B", nullptr));
+        crossOutButton->setText(QCoreApplication::translate("dialogfornote", "\320\241", nullptr));
     } // retranslateUi
 
 };

@@ -21,6 +21,11 @@ class dialogfornote : public QWidget {
    private:
     Ui::dialogfornote* ui;
     Manager* manager;
+
+   private slots:
+    void onCrossOutClicked();
+    void onUnderlinedClicked();
+    void onRedClicked();
 };
 
 #endif	// DIALOGFORNOTE_H

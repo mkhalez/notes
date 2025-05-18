@@ -111,7 +111,7 @@ MainWindow::MainWindow(QWidget* parent)
             &MainWindow::AddToDoListHelper);
     connect(drawingAction, &QAction::triggered, this,
             &MainWindow::AddDrawingHelper);*/
-    qDebug() << manager.number_of_item;
+    //qDebug() << manager.number_of_item;
     if (manager.number_of_item > 0) {
         buttons_layout->addStretch();
     }

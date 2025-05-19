@@ -10,12 +10,14 @@ CONFIG += c++17
 
 SOURCES += \
     dialogfornote.cpp \
+    filemanagerfornote.cpp \
     main.cpp \
     mainwindow.cpp \
     manager.cpp
 
 HEADERS += \
     dialogfornote.h \
+    filemanagerfornote.h \
     mainwindow.h \
     manager.h
 

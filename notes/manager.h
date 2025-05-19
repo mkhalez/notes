@@ -24,6 +24,7 @@ class Manager {
     QStringList getListFilesInDirectory();
     QString GetNameOfFileThanksPtr(QPushButton* ptr);
     std::unordered_map<QPushButton*, bool> is_open_button;
+    std::unordered_map<QPushButton*, QString> notes;
 
     /*void AddToDoListToManager(QPushButton* to_do_list);
     void AddDRrawingToManager(QPushButton* draw);*/
@@ -31,7 +32,7 @@ class Manager {
 
    private:
     //QVector<QPushButton*> notes;
-    std::unordered_map<QPushButton*, QString> notes;
+
 
     QStringList all_files;
     void RefreshFileList();

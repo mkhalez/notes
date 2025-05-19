@@ -29,7 +29,7 @@ class MainWindow : public QMainWindow {
     QWidget* buttons_container;
     QVBoxLayout* buttons_layout;
     QHBoxLayout* bottom_layout;
-    dialogfornote* dialog;
+    dialogfornote* dialog = nullptr;
 
 
     void showContextMenu(const QPoint& pos);
@@ -43,6 +43,9 @@ class MainWindow : public QMainWindow {
     bool isAdditing = false;
     QPushButton* add_button;
     QMenu* dropdownMenu;
+
+   protected:
+    void closeEvent(QCloseEvent* event) override;
 
 
    private slots:

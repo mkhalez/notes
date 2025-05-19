@@ -2,20 +2,30 @@
 #include "ui_dialogfornote.h"
 
 
-dialogfornote::dialogfornote(QWidget* parent)
+dialogfornote::dialogfornote(QPushButton* button, Manager* manager,
+                             QWidget* parent)
     : QWidget(parent), ui(new Ui::dialogfornote) {
     ui->setupUi(this);
+    this->manager = manager;
+    this->button = button;
     this->resize(700, 600);
     this->setWindowTitle("Note");
     this->setStyleSheet("QWidget#dialogfornote { font-size: 10pt; }");
     ui->titleEdit->setPlaceholderText("the title of note..");
     ui->textEdit->setPlaceholderText("the text of note..");
     int size = 50;
-    ui->titleEdit->setText("when to go for a walk?");
 
+    ui->textEdit->setHtml(
+        file_manager.ReadFile("data_of_user", manager->notes[button]));
+
+    ui->titleEdit->setText(
+        file_manager.NameForTitle("data_of_user", manager->notes[button]));
     if (ui->titleEdit->text().isEmpty()) {
         ui->titleEdit->setFocus();
     } else {
+        QTextCursor cursor = ui->textEdit->textCursor();
+        cursor.movePosition(QTextCursor::End);
+        ui->textEdit->setTextCursor(cursor);
         ui->textEdit->setFocus();
     }
 
@@ -90,11 +100,14 @@ dialogfornote::dialogfornote(QWidget* parent)
 }
 
 dialogfornote::~dialogfornote() {
-    delete ui;
-}
+    QString text;
+    text = ui->titleEdit->text();
+    file_manager.SaveTitle("data_of_user", manager->notes[button], text);
+    text = ui->textEdit->toHtml();
+    file_manager.SaveFile("data_of_user", manager->notes[button], text);
 
-void dialogfornote::SetManager(Manager* manager) {
-    this->manager = manager;
+
+    delete ui;
 }
 
 void dialogfornote::onCrossOutClicked() {

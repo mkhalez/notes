@@ -3,6 +3,7 @@
 
 #include <QPushButton>
 #include <QWidget>
+#include "filemanagerfornote.h"
 #include "manager.h"
 
 namespace Ui {
@@ -13,14 +14,15 @@ class dialogfornote : public QWidget {
     Q_OBJECT
 
    public:
-    explicit dialogfornote(QWidget* parent = nullptr);
+    explicit dialogfornote(QPushButton* button, Manager* manager,
+                           QWidget* parent = nullptr);
     ~dialogfornote();
-    QPushButton* button;
-    void SetManager(Manager* manager);
 
    private:
     Ui::dialogfornote* ui;
     Manager* manager;
+    FileManagerForNote file_manager;
+    QPushButton* button;
 
    private slots:
     void onCrossOutClicked();

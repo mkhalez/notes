@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), manager() {
     ui->setupUi(this);
 
+    this->setWindowTitle("MIND STORAGE");
+
     main_container = new QWidget(this);
     main_layout = new QVBoxLayout(main_container);
 
@@ -222,6 +224,13 @@ void MainWindow::showContextMenu(const QPoint& pos) {
     }
 }
 
+void MainWindow::closeEvent(QCloseEvent* event) {
+    if (dialog && dialog->isVisible()) {
+        dialog->close();
+    }
+    QMainWindow::closeEvent(event);
+}
+
 void MainWindow::PrivateClick() {
     if (isPrivate) {
         // Загружаем первую иконку
@@ -285,7 +294,6 @@ void MainWindow::AddNoteHelper() {
 
     manager.CreateFile(currentNumber);
     manager.number_of_item++;
-    //manager.print();
 }
 
 void MainWindow::OpenFileWithContent(QPushButton* button) {
@@ -293,16 +301,18 @@ void MainWindow::OpenFileWithContent(QPushButton* button) {
         return;
     }
 
-    dialog = new dialogfornote();
-    manager.is_open_button[button] = true;
-    dialog->setAttribute(Qt::WA_DeleteOnClose);
-    dialog->show();
-    dialog->button = button;
-    Manager* ptr = &manager;
-    dialog->SetManager(ptr);
+    if (manager.ReadFirstLine("data_of_user", manager.notes[button]) == 0) {
+        Manager* ptr = &manager;
+        dialog = new dialogfornote(button, ptr);
+        manager.is_open_button[button] = true;
+        dialog->setAttribute(Qt::WA_DeleteOnClose);
+        dialog->show();
 
-    connect(dialog, &dialogfornote::destroyed, this,
-            [this, button]() { manager.is_open_button[button] = false; });
+        connect(dialog, &dialogfornote::destroyed, this, [this, button]() {
+            manager.is_open_button[button] = false;
+            dialog = nullptr;
+        });
+    }
 }
 
 /*void MainWindow::AddToDoListHelper() {

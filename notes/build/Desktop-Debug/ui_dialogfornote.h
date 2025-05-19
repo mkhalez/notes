@@ -90,8 +90,8 @@ public:
     {
         dialogfornote->setWindowTitle(QCoreApplication::translate("dialogfornote", "Form", nullptr));
         underlinedButton->setText(QCoreApplication::translate("dialogfornote", "A", nullptr));
-        redButton->setText(QCoreApplication::translate("dialogfornote", "B", nullptr));
-        crossOutButton->setText(QCoreApplication::translate("dialogfornote", "\320\241", nullptr));
+        redButton->setText(QCoreApplication::translate("dialogfornote", "K", nullptr));
+        crossOutButton->setText(QCoreApplication::translate("dialogfornote", "N", nullptr));
     } // retranslateUi
 
 };

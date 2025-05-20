@@ -6,6 +6,7 @@
 #include <QScrollArea>
 #include <QVBoxLayout>
 #include "dialogfornote.h"
+#include "dialogfortodolist.h"
 #include "manager.h"
 
 QT_BEGIN_NAMESPACE
@@ -30,6 +31,7 @@ class MainWindow : public QMainWindow {
     QVBoxLayout* buttons_layout;
     QHBoxLayout* bottom_layout;
     dialogfornote* dialog = nullptr;
+    dialogfortodolist* dialog_for_to_do_list = nullptr;
 
 
     void showContextMenu(const QPoint& pos);
@@ -52,8 +54,8 @@ class MainWindow : public QMainWindow {
     void PrivateClick();
     void AddClick();
     void AddNoteHelper();
-    void OpenFileWithContent(QPushButton* button);
-    /*void AddToDoListHelper();
-    void AddDrawingHelper();*/
+    void OpenFileWithContent(QPushButton* button, int type_of_button);
+    void AddToDoListHelper();
+    /*void AddDrawingHelper();*/
 };
 #endif	// MAINWINDOW_H

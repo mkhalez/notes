@@ -53,17 +53,21 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = ../../dialogfornote.cpp \
+		../../dialogfortodolist.cpp \
 		../../filemanagerfornote.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
 		../../manager.cpp moc_dialogfornote.cpp \
+		moc_dialogfortodolist.cpp \
 		moc_mainwindow.cpp
 OBJECTS       = dialogfornote.o \
+		dialogfortodolist.o \
 		filemanagerfornote.o \
 		main.o \
 		mainwindow.o \
 		manager.o \
 		moc_dialogfornote.o \
+		moc_dialogfortodolist.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt6/mkspecs/common/unix.conf \
@@ -132,9 +136,11 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/lex.prf \
 		../../../../notes.pro ../../dialogfornote.h \
+		../../dialogfortodolist.h \
 		../../filemanagerfornote.h \
 		../../mainwindow.h \
 		../../manager.h ../../dialogfornote.cpp \
+		../../dialogfortodolist.cpp \
 		../../filemanagerfornote.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
@@ -147,7 +153,7 @@ TARGET        = notes
 first: all
 ####### Build rules
 
-notes: ui_dialogfornote.h ui_mainwindow.h $(OBJECTS)  
+notes: ui_dialogfornote.h ui_dialogfortodolist.h ui_mainwindow.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET)  $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: ../../notes.pro /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++/qmake.conf /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/spec_pre.prf \
@@ -306,9 +312,9 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../dialogfornote.h ../../filemanagerfornote.h ../../mainwindow.h ../../manager.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../dialogfornote.cpp ../../filemanagerfornote.cpp ../../main.cpp ../../mainwindow.cpp ../../manager.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../dialogfornote.ui ../../mainwindow.ui $(DISTDIR)/
+	$(COPY_FILE) --parents ../../dialogfornote.h ../../dialogfortodolist.h ../../filemanagerfornote.h ../../mainwindow.h ../../manager.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../dialogfornote.cpp ../../dialogfortodolist.cpp ../../filemanagerfornote.cpp ../../main.cpp ../../mainwindow.cpp ../../manager.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../dialogfornote.ui ../../dialogfortodolist.ui ../../mainwindow.ui $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -340,15 +346,20 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/data/dummy.cpp
 	g++ -pipe -g -std=gnu++1z -Wall -Wextra -fPIC -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_dialogfornote.cpp moc_mainwindow.cpp
+compiler_moc_header_make_all: moc_dialogfornote.cpp moc_dialogfortodolist.cpp moc_mainwindow.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_dialogfornote.cpp moc_mainwindow.cpp
+	-$(DEL_FILE) moc_dialogfornote.cpp moc_dialogfortodolist.cpp moc_mainwindow.cpp
 moc_dialogfornote.cpp: ../../dialogfornote.h \
 		../../filemanagerfornote.h \
 		../../manager.h \
 		moc_predefs.h \
 		/usr/lib/qt6/libexec/moc
 	/usr/lib/qt6/libexec/moc $(DEFINES) --include /home/mkh-alez/pet_project/notes/build/Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -I/home/mkh-alez/pet_project/notes -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../dialogfornote.h -o moc_dialogfornote.cpp
+
+moc_dialogfortodolist.cpp: ../../dialogfortodolist.h \
+		moc_predefs.h \
+		/usr/lib/qt6/libexec/moc
+	/usr/lib/qt6/libexec/moc $(DEFINES) --include /home/mkh-alez/pet_project/notes/build/Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -I/home/mkh-alez/pet_project/notes -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../dialogfortodolist.h -o moc_dialogfortodolist.cpp
 
 moc_mainwindow.cpp: ../../mainwindow.h \
 		../../dialogfornote.h \
@@ -362,12 +373,16 @@ compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_dialogfornote.h ui_mainwindow.h
+compiler_uic_make_all: ui_dialogfornote.h ui_dialogfortodolist.h ui_mainwindow.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_dialogfornote.h ui_mainwindow.h
+	-$(DEL_FILE) ui_dialogfornote.h ui_dialogfortodolist.h ui_mainwindow.h
 ui_dialogfornote.h: ../../dialogfornote.ui \
 		/usr/lib/qt6/libexec/uic
 	/usr/lib/qt6/libexec/uic ../../dialogfornote.ui -o ui_dialogfornote.h
+
+ui_dialogfortodolist.h: ../../dialogfortodolist.ui \
+		/usr/lib/qt6/libexec/uic
+	/usr/lib/qt6/libexec/uic ../../dialogfortodolist.ui -o ui_dialogfortodolist.h
 
 ui_mainwindow.h: ../../mainwindow.ui \
 		/usr/lib/qt6/libexec/uic
@@ -388,6 +403,10 @@ dialogfornote.o: ../../dialogfornote.cpp ../../dialogfornote.h \
 		../../manager.h \
 		ui_dialogfornote.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o dialogfornote.o ../../dialogfornote.cpp
+
+dialogfortodolist.o: ../../dialogfortodolist.cpp ../../dialogfortodolist.h \
+		ui_dialogfortodolist.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o dialogfortodolist.o ../../dialogfortodolist.cpp
 
 filemanagerfornote.o: ../../filemanagerfornote.cpp ../../filemanagerfornote.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o filemanagerfornote.o ../../filemanagerfornote.cpp
@@ -410,6 +429,9 @@ manager.o: ../../manager.cpp ../../manager.h
 
 moc_dialogfornote.o: moc_dialogfornote.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_dialogfornote.o moc_dialogfornote.cpp
+
+moc_dialogfortodolist.o: moc_dialogfortodolist.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_dialogfortodolist.o moc_dialogfortodolist.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

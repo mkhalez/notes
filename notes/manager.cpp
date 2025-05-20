@@ -26,6 +26,11 @@ void Manager::AddNoteToManager(QPushButton* note, QString name_of_file) {
     notes.insert(std::make_pair(note, name_of_file));
 }
 
+void Manager::AddToDoListToManager(QPushButton* to_do_list,
+                                   QString name_of_file) {
+    this->to_do_list.insert(std::make_pair(to_do_list, name_of_file));
+}
+
 /*QStringList Manager::getListFilesInDirectory() {
     QDir dir("data_of_user");
     QStringList files;

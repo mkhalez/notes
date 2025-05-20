@@ -14,6 +14,7 @@ class Manager {
 
 
     void AddNoteToManager(QPushButton* note, QString name_of_file);
+    void AddToDoListToManager(QPushButton* to_do_list, QString name_of_file);
     void DeleteFile(const QString& folderPath, const QString& fileName);
     //void OpenFileWithContent(QPushButton* button);
     void FillIsOpenButton(QPushButton* button, bool value);
@@ -23,8 +24,12 @@ class Manager {
     QStringList GetListOfFileByCreationTime(const QString& directoryPath);
     QStringList getListFilesInDirectory();
     QString GetNameOfFileThanksPtr(QPushButton* ptr);
+
+
     std::unordered_map<QPushButton*, bool> is_open_button;
     std::unordered_map<QPushButton*, QString> notes;
+    std::unordered_map<QPushButton*, QString> to_do_list;
+
 
     /*void AddToDoListToManager(QPushButton* to_do_list);
     void AddDRrawingToManager(QPushButton* draw);*/

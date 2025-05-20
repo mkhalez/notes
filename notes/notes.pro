@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     dialogfornote.cpp \
+    dialogfortodolist.cpp \
     filemanagerfornote.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -17,12 +18,14 @@ SOURCES += \
 
 HEADERS += \
     dialogfornote.h \
+    dialogfortodolist.h \
     filemanagerfornote.h \
     mainwindow.h \
     manager.h
 
 FORMS += \
     dialogfornote.ui \
+    dialogfortodolist.ui \
     mainwindow.ui
 
 # Default rules for deployment.

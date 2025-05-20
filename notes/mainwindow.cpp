@@ -9,6 +9,9 @@
 
 #include "ui_mainwindow.h"
 
+const int kNote = 0;
+const int kToDoList = 1;
+
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), manager() {
     ui->setupUi(this);
@@ -109,9 +112,9 @@ MainWindow::MainWindow(QWidget* parent)
     connect(add_button, &QPushButton::clicked, this, &MainWindow::AddClick);
 
     connect(noteAction, &QAction::triggered, this, &MainWindow::AddNoteHelper);
-    /*connect(todoAction, &QAction::triggered, this,
+    connect(todoAction, &QAction::triggered, this,
             &MainWindow::AddToDoListHelper);
-    connect(drawingAction, &QAction::triggered, this,
+    /*connect(drawingAction, &QAction::triggered, this,
             &MainWindow::AddDrawingHelper);*/
     //qDebug() << manager.number_of_item;
     if (manager.number_of_item > 0) {
@@ -131,7 +134,7 @@ MainWindow::MainWindow(QWidget* parent)
                 &MainWindow::showContextMenu);
 
         connect(button, &QPushButton::clicked, this,
-                [this, button]() { OpenFileWithContent(button); });
+                [this, button]() { OpenFileWithContent(button, kNote); });
         /*(button, &QPushButton::clicked, this,
                 [this, button]() { manager.OpenFileWithContent(button); });*/
         manager.FillIsOpenButton(button, false);
@@ -283,7 +286,7 @@ void MainWindow::AddNoteHelper() {
                              QString::number(currentNumber) + "data.txt");
 
     connect(button, &QPushButton::clicked, this,
-            [this, button]() { OpenFileWithContent(button); });
+            [this, button]() { OpenFileWithContent(button, kNote); });
     /*connect(button, &QPushButton::clicked, this,
             [this, button]() { manager.OpenFileWithContent(button); });*/
 
@@ -296,23 +299,67 @@ void MainWindow::AddNoteHelper() {
     manager.number_of_item++;
 }
 
-void MainWindow::OpenFileWithContent(QPushButton* button) {
+void MainWindow::OpenFileWithContent(QPushButton* button, int type_of_button) {
     if (manager.is_open_button[button]) {
         return;
     }
+    if (type_of_button == kNote) {
+        if (manager.ReadFirstLine("data_of_user", manager.notes[button]) == 0) {
+            Manager* ptr = &manager;
+            dialog = new dialogfornote(button, ptr);
+            manager.is_open_button[button] = true;
+            dialog->setAttribute(Qt::WA_DeleteOnClose);
+            dialog->show();
 
-    if (manager.ReadFirstLine("data_of_user", manager.notes[button]) == 0) {
-        Manager* ptr = &manager;
-        dialog = new dialogfornote(button, ptr);
-        manager.is_open_button[button] = true;
-        dialog->setAttribute(Qt::WA_DeleteOnClose);
-        dialog->show();
+            connect(dialog, &dialogfornote::destroyed, this, [this, button]() {
+                manager.is_open_button[button] = false;
+                dialog = nullptr;
+            });
+        }
+    } else if (type_of_button == kToDoList) {
+        if (true) {
+            Manager* ptr = &manager;
+            dialog_for_to_do_list = new dialogfortodolist(button, ptr);
+            manager.is_open_button[button] = true;
+            dialog_for_to_do_list->setAttribute(Qt::WA_DeleteOnClose);
+            dialog_for_to_do_list->show();
 
-        connect(dialog, &dialogfornote::destroyed, this, [this, button]() {
-            manager.is_open_button[button] = false;
-            dialog = nullptr;
-        });
+            connect(dialog_for_to_do_list, &dialogfortodolist::destroyed, this,
+                    [this, button]() {
+                        manager.is_open_button[button] = false;
+                        dialog_for_to_do_list = nullptr;
+                    });
+        }
     }
+}
+
+void MainWindow::AddToDoListHelper() {
+    if (manager.number_of_item == 0) {
+        buttons_layout->addStretch();
+    }
+
+    QPushButton* button =
+        new QPushButton(QString("New To-Do List"), buttons_container);
+    buttons_layout->insertWidget(buttons_layout->count() - 1, button);
+
+    int currentNumber = manager.number_of_item;
+    currentNumber++;
+
+    manager.AddToDoListToManager(button,
+                                 QString::number(currentNumber) + "data.txt");
+
+    connect(button, &QPushButton::clicked, this,
+            [this, button]() { OpenFileWithContent(button, kToDoList); });
+    /*connect(button, &QPushButton::clicked, this,
+            [this, button]() { manager.OpenFileWithContent(button); });*/
+
+    button->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(button, &QPushButton::customContextMenuRequested, this,
+            &MainWindow::showContextMenu);
+    manager.FillIsOpenButton(button, false);
+
+    manager.CreateFile(currentNumber);
+    manager.number_of_item++;
 }
 
 /*void MainWindow::AddToDoListHelper() {

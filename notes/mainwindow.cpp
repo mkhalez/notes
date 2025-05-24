@@ -380,6 +380,11 @@ void MainWindow::OpenFileWithContent(QPushButton* button,
                 [this, button]() {
                     manager.is_open_button[button] = false;
                     dialog_for_to_do_list = nullptr;
+                    QString name_of_button = manager.NameForTitle(
+                        "data_of_user", manager.to_do_list[button]);
+                    if (!name_of_button.isEmpty()) {
+                        button->setText(name_of_button);
+                    }
                 });
     }
 }

@@ -169,6 +169,9 @@ dialogfortodolist::dialogfortodolist(QPushButton* button, Manager* manager,
     connect(ui->listWidget, &QListWidget::itemSelectionChanged, this,
             &dialogfortodolist::onItemSelectionChanged);
 
+    connect(ui->txtTask, &QLineEdit::returnPressed, this,
+            [this]() { AddTask(ui->txtTask->text()); });
+
     /*            connect(button, &QPushButton::clicked, this, [this, button]() {
                 OpenFileWithContent(button, kToDoList);
             });*/

@@ -31,8 +31,9 @@ public:
     QPushButton *addButton;
     QListWidget *listWidget;
     QHBoxLayout *button_layout;
+    QLineEdit *titleEdit;
     QPushButton *removeAllButton;
-    QPushButton *pushButton;
+    QPushButton *correctButton;
 
     void setupUi(QWidget *dialogfortodolist)
     {
@@ -70,16 +71,21 @@ public:
 
         button_layout = new QHBoxLayout();
         button_layout->setObjectName("button_layout");
+        titleEdit = new QLineEdit(dialogfortodolist);
+        titleEdit->setObjectName("titleEdit");
+
+        button_layout->addWidget(titleEdit);
+
         removeAllButton = new QPushButton(dialogfortodolist);
         removeAllButton->setObjectName("removeAllButton");
         removeAllButton->setFont(font);
 
         button_layout->addWidget(removeAllButton);
 
-        pushButton = new QPushButton(dialogfortodolist);
-        pushButton->setObjectName("pushButton");
+        correctButton = new QPushButton(dialogfortodolist);
+        correctButton->setObjectName("correctButton");
 
-        button_layout->addWidget(pushButton);
+        button_layout->addWidget(correctButton);
 
 
         verticalLayout->addLayout(button_layout);
@@ -98,7 +104,7 @@ public:
         dialogfortodolist->setWindowTitle(QCoreApplication::translate("dialogfortodolist", "Form", nullptr));
         addButton->setText(QCoreApplication::translate("dialogfortodolist", "add", nullptr));
         removeAllButton->setText(QCoreApplication::translate("dialogfortodolist", "remove all", nullptr));
-        pushButton->setText(QString());
+        correctButton->setText(QString());
     } // retranslateUi
 
 };

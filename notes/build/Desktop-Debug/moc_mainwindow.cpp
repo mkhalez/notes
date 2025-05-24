@@ -35,7 +35,7 @@ struct qt_meta_stringdata_MainWindow_t {
     char stringdata5[20];
     char stringdata6[13];
     char stringdata7[7];
-    char stringdata8[15];
+    char stringdata8[13];
     char stringdata9[18];
 };
 #define QT_MOC_LITERAL(ofs, len) \
@@ -50,8 +50,8 @@ Q_CONSTINIT static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_Main
         QT_MOC_LITERAL(48, 19),  // "OpenFileWithContent"
         QT_MOC_LITERAL(68, 12),  // "QPushButton*"
         QT_MOC_LITERAL(81, 6),  // "button"
-        QT_MOC_LITERAL(88, 14),  // "type_of_button"
-        QT_MOC_LITERAL(103, 17)   // "AddToDoListHelper"
+        QT_MOC_LITERAL(88, 12),  // "name_of_file"
+        QT_MOC_LITERAL(101, 17)   // "AddToDoListHelper"
     },
     "MainWindow",
     "PrivateClick",
@@ -61,7 +61,7 @@ Q_CONSTINIT static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_Main
     "OpenFileWithContent",
     "QPushButton*",
     "button",
-    "type_of_button",
+    "name_of_file",
     "AddToDoListHelper"
 };
 #undef QT_MOC_LITERAL
@@ -91,7 +91,7 @@ Q_CONSTINIT static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 6, QMetaType::Int,    7,    8,
+    QMetaType::Void, 0x80000000 | 6, QMetaType::QString,    7,    8,
     QMetaType::Void,
 
        0        // eod
@@ -115,7 +115,7 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
         // method 'OpenFileWithContent'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<QPushButton *, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>,
+        QtPrivate::TypeAndForceComplete<QString, std::false_type>,
         // method 'AddToDoListHelper'
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
@@ -131,7 +131,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 0: _t->PrivateClick(); break;
         case 1: _t->AddClick(); break;
         case 2: _t->AddNoteHelper(); break;
-        case 3: _t->OpenFileWithContent((*reinterpret_cast< std::add_pointer_t<QPushButton*>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
+        case 3: _t->OpenFileWithContent((*reinterpret_cast< std::add_pointer_t<QPushButton*>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
         case 4: _t->AddToDoListHelper(); break;
         default: ;
         }

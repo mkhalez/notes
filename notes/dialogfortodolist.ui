@@ -53,6 +53,9 @@
      <item>
       <layout class="QHBoxLayout" name="button_layout">
        <item>
+        <widget class="QLineEdit" name="titleEdit"/>
+       </item>
+       <item>
         <widget class="QPushButton" name="removeAllButton">
          <property name="font">
           <font>
@@ -65,7 +68,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="correctButton">
          <property name="text">
           <string/>
          </property>

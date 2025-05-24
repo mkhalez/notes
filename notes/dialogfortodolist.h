@@ -1,6 +1,7 @@
 #ifndef DIALOGFORTODOLIST_H
 #define DIALOGFORTODOLIST_H
 
+#include <filemanagerfornote.h>
 #include <QPushButton>
 #include <QWidget>
 #include "manager.h"
@@ -17,17 +18,20 @@ class dialogfortodolist : public QWidget {
                                QWidget* parent = nullptr);
     ~dialogfortodolist();
 
+
    private:
     Ui::dialogfortodolist* ui;
     Manager* manager;
     QMenu* dropdownMenu;
     QPushButton* button;
     QPushButton* correct_button;
+    FileManagerForNote file_manager;
+    void ConstructorCrossOutTask(int current_row);
 
    private slots:
     void onItemClicked();
     void onItemSelectionChanged();
-    void AddTask();
+    void AddTask(QString text = "");
     void RemoveAll();
     void CorrectTask();
     void CrossOutTask();

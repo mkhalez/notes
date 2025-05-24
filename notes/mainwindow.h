@@ -54,7 +54,7 @@ class MainWindow : public QMainWindow {
     void PrivateClick();
     void AddClick();
     void AddNoteHelper();
-    void OpenFileWithContent(QPushButton* button, int type_of_button);
+    void OpenFileWithContent(QPushButton* button, QString name_of_file);
     void AddToDoListHelper();
     /*void AddDrawingHelper();*/
 };

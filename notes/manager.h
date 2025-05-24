@@ -16,9 +16,10 @@ class Manager {
     void AddNoteToManager(QPushButton* note, QString name_of_file);
     void AddToDoListToManager(QPushButton* to_do_list, QString name_of_file);
     void DeleteFile(const QString& folderPath, const QString& fileName);
+    QString NameForTitle(const QString& folderPath, const QString& fileName);
     //void OpenFileWithContent(QPushButton* button);
     void FillIsOpenButton(QPushButton* button, bool value);
-    void CreateFile(int number);
+    void CreateFile(int number, int type);
     bool DoHaveFile(QString folder_path, QString name_of_file);
     int ReadFirstLine(QString folder_path, QString name_of_file);
     QStringList GetListOfFileByCreationTime(const QString& directoryPath);

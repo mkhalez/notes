@@ -19,7 +19,7 @@ dialogfornote::dialogfornote(QPushButton* button, Manager* manager,
         file_manager.ReadFile("data_of_user", manager->notes[button]));
 
     ui->titleEdit->setText(
-        file_manager.NameForTitle("data_of_user", manager->notes[button]));
+        manager->NameForTitle("data_of_user", manager->notes[button]));
     if (ui->titleEdit->text().isEmpty()) {
         ui->titleEdit->setFocus();
     } else {

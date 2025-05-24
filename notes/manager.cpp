@@ -61,7 +61,7 @@ void Manager::FillIsOpenButton(QPushButton* button, bool value = false) {
     is_open_button.insert(std::make_pair(button, value));
 }
 
-void Manager::CreateFile(int number) {
+void Manager::CreateFile(int number, int type) {
     QDir dir("data_of_user");
 
     QString filePath = dir.filePath(QString::number(number) + "data.txt");
@@ -69,7 +69,7 @@ void Manager::CreateFile(int number) {
     QFile file(filePath);
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QTextStream out(&file);
-        out << "0";
+        out << QString::number(type);
         file.close();
     } else {
         qWarning() << "Не удалось создать файл:" << filePath;
@@ -86,19 +86,24 @@ void Manager::CreateFile(int number) {
 
 int Manager::ReadFirstLine(QString folder_path, QString name_of_file) {
     QDir dir_for_program(folder_path);
-    QString maxNotePath = dir_for_program.filePath(folder_path);
-    // Проверяем существование файла
-    QFile maxNoteFile(maxNotePath);
-    if (maxNoteFile.exists()) {
-        if (maxNoteFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QTextStream in(&maxNoteFile);
-            QString firstLine = in.readLine();	// Читаем первую строку
-            int value = firstLine.toInt();
-            return value;
-        }
-    } else {
-        return 0;
+    QString filePath = dir_for_program.filePath(name_of_file);
+
+    QFile file(filePath);
+    if (!file.exists()) {
+        return -1;
     }
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return -1;
+    }
+
+    QTextStream in(&file);
+    QString firstLine = in.readLine();
+    file.close();
+
+    bool ok;
+    int value = firstLine.toInt(&ok);
+    return ok ? value : -1;
 }
 
 QStringList Manager::GetListOfFileByCreationTime(const QString& directoryPath) {
@@ -131,6 +136,31 @@ void Manager::DeleteFile(const QString& folderPath, const QString& fileName) {
     if (QFile::exists(filePath)) {
         QFile::remove(filePath);
     }
+}
+
+QString Manager::NameForTitle(const QString& folderPath,
+                              const QString& fileName) {
+    QFile file(folderPath + "/" + fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return "";
+    }
+
+    QTextStream in(&file);
+    QString content;
+    int lineCount = 0;
+
+    QString line;
+
+    while (!in.atEnd()) {
+        line = in.readLine();
+        if (lineCount == 1) {
+            return line;
+        }
+        lineCount++;
+    }
+
+    file.close();
+    return content;
 }
 
 

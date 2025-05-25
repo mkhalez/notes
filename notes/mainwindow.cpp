@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget* parent)
 
     private_button = new QPushButton(this);
     // Загрузка иконки
-    QPixmap pixmap("/home/mkh-alez/Downloads/new_var.webp");
+    QPixmap pixmap("data_of_program/photo_for_private_button/new_var.webp");
     // Масштабирование изображения под размер кнопки (сохраняя пропорции)
     QIcon icon(
         pixmap.scaled(50, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation));
@@ -98,7 +98,6 @@ MainWindow::MainWindow(QWidget* parent)
 
     QAction* noteAction = dropdownMenu->addAction("note");
     QAction* todoAction = dropdownMenu->addAction("to-do list");
-    QAction* drawingAction = dropdownMenu->addAction("drawing");
 
     main_layout->addLayout(bottom_layout);
 
@@ -270,26 +269,65 @@ void MainWindow::closeEvent(QCloseEvent* event) {
     if (dialog && dialog->isVisible()) {
         dialog->close();
     }
+    if (dialog_registration) {
+        dialog_registration->close();
+    }
     QMainWindow::closeEvent(event);
 }
 
 void MainWindow::PrivateClick() {
-    if (isPrivate) {
-        // Загружаем первую иконку
-        QPixmap pixmap1("/home/mkh-alez/Downloads/new_var.webp");
-        QIcon icon1(pixmap1.scaled(50, 50, Qt::KeepAspectRatio,
-                                   Qt::SmoothTransformation));
-        private_button->setIcon(icon1);
-    } else {
-        // Загружаем вторую иконку
-        QPixmap pixmap2("/home/mkh-alez/Downloads/open_yey.svg");
-        QIcon icon2(pixmap2.scaled(50, 50, Qt::KeepAspectRatio,
-                                   Qt::SmoothTransformation));
-        private_button->setIcon(icon2);
-    }
+    if (!isPrivate && !manager.isOpenPrivate) {
 
-    // Инвертируем состояние
-    isPrivate = !isPrivate;
+        registration_file_manager.CreateFile("data_of_program", "first_using");
+        int first_line =
+            manager.ReadFirstLine("data_of_program", "first_using");
+
+        if (first_line == -1) {
+            QPixmap pixmap1(
+                "data_of_program/photo_for_private_button/open_yey.svg");
+            QIcon icon1(pixmap1.scaled(50, 50, Qt::KeepAspectRatio,
+                                       Qt::SmoothTransformation));
+            private_button->setIcon(icon1);
+            dialog_registration = new registration();
+            manager.isOpenPrivate = true;
+            dialog_registration->setAttribute(Qt::WA_DeleteOnClose);
+            dialog_registration->show();
+            connect(dialog_registration, &registration::destroyed, this,
+                    [this]() {
+                        manager.isOpenPrivate = false;
+                        dialog_registration = nullptr;
+                        isPrivate = false;
+                        QPixmap pixmap2(
+                            "data_of_program/photo_for_private_button/"
+                            "new_var.webp");
+                        QIcon icon2(pixmap2.scaled(50, 50, Qt::KeepAspectRatio,
+                                                   Qt::SmoothTransformation));
+                        private_button->setIcon(icon2);
+                    });
+        } else if (first_line == 0) {
+            QPixmap pixmap1(
+                "data_of_program/photo_for_private_button/open_yey.svg");
+            QIcon icon1(pixmap1.scaled(50, 50, Qt::KeepAspectRatio,
+                                       Qt::SmoothTransformation));
+            private_button->setIcon(icon1);
+            dialog_authentication = new authentication();
+            manager.isOpenPrivate = true;
+            dialog_authentication->setAttribute(Qt::WA_DeleteOnClose);
+            dialog_authentication->show();
+            connect(dialog_authentication, &authentication::destroyed, this,
+                    [this]() {
+                        manager.isOpenPrivate = false;
+                        dialog_authentication = nullptr;
+                        isPrivate = false;
+                        QPixmap pixmap2(
+                            "data_of_program/photo_for_private_button/"
+                            "new_var.webp");
+                        QIcon icon2(pixmap2.scaled(50, 50, Qt::KeepAspectRatio,
+                                                   Qt::SmoothTransformation));
+                        private_button->setIcon(icon2);
+                    });
+        }
+    }
 }
 
 void MainWindow::AddClick() {

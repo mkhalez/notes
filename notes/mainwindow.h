@@ -1,5 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+#include <authentication.h>
+#include <registration.h>
 #include <QMainWindow>
 #include <QMenu>
 #include <QPushButton>
@@ -7,6 +9,7 @@
 #include <QVBoxLayout>
 #include "dialogfornote.h"
 #include "dialogfortodolist.h"
+#include "filemanagerforregistration.h"
 #include "manager.h"
 
 QT_BEGIN_NAMESPACE
@@ -24,6 +27,7 @@ class MainWindow : public QMainWindow {
 
    private:
     Ui::MainWindow* ui;
+    FileManagerForRegistration registration_file_manager;
     QWidget* main_container;
     QVBoxLayout* main_layout;
     QScrollArea* scrollArea;
@@ -32,6 +36,8 @@ class MainWindow : public QMainWindow {
     QHBoxLayout* bottom_layout;
     dialogfornote* dialog = nullptr;
     dialogfortodolist* dialog_for_to_do_list = nullptr;
+    registration* dialog_registration = nullptr;
+    authentication* dialog_authentication = nullptr;
 
 
     void showContextMenu(const QPoint& pos);
@@ -40,6 +46,7 @@ class MainWindow : public QMainWindow {
     Manager manager;
 
     bool isPrivate = false;
+
     QPushButton* private_button;
 
     bool isAdditing = false;

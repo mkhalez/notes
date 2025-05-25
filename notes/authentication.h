@@ -21,9 +21,11 @@ class authentication : public QWidget {
     QString hashPassword(const QString& password);
     FileManagerForRegistration file_manager;
 
-
    private slots:
     void CheckUser();
+
+   signals:
+    void finishAuthenticationDialogWork(bool success, const QString& password);
 };
 
 #endif	// AUTHENTICATION_H

@@ -313,9 +313,13 @@ void MainWindow::PrivateClick() {
             dialog_authentication = new authentication();
             manager.isOpenPrivate = true;
             dialog_authentication->setAttribute(Qt::WA_DeleteOnClose);
+
             dialog_authentication->show();
-            connect(dialog_authentication, &authentication::destroyed, this,
-                    [this]() {
+            connect(
+                dialog_authentication,
+                &authentication::finishAuthenticationDialogWork, this,
+                [this](bool success_authentication, QString correct_password) {
+                    if (!success_authentication) {
                         manager.isOpenPrivate = false;
                         dialog_authentication = nullptr;
                         isPrivate = false;
@@ -325,7 +329,10 @@ void MainWindow::PrivateClick() {
                         QIcon icon2(pixmap2.scaled(50, 50, Qt::KeepAspectRatio,
                                                    Qt::SmoothTransformation));
                         private_button->setIcon(icon2);
-                    });
+                    } else {
+                        qDebug() << correct_password;
+                    }
+                });
         }
     }
 }

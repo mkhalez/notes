@@ -1,6 +1,6 @@
 #include "authentication.h"
 #include <QCryptographicHash>
-
+#include <QMessageBox>
 #include "ui_authentication.h"
 
 
@@ -51,7 +51,10 @@ authentication::authentication(QWidget* parent)
         "   background-color: #45a049;"	 // Темно-зеленый при наведении
         "}");
 
-    connect(ui->closeButton, &QPushButton::clicked, this, [this] { close(); });
+    connect(ui->closeButton, &QPushButton::clicked, this, [this] {
+        close();
+        emit(finishAuthenticationDialogWork(false, ""));
+    });
     connect(ui->continueButton, &QPushButton::clicked, this,
             &authentication::CheckUser);
 }
@@ -75,9 +78,14 @@ void authentication::CheckUser() {
 
     QString true_hash =
         file_manager.ReadSecondLine("data_of_program", "first_using");
-    if (true_hash == hash_of_guess) {
-        qDebug() << true;
+    if (true_hash != hash_of_guess) {
+        QMessageBox::warning(this,
+                             "Password E"
+                             "rror",
+                             "password is not correct", QMessageBox::Ok);
+        ui->passwordEdit->clear();
     } else {
-        qDebug() << false;
+        this->close();
+        finishAuthenticationDialogWork(true, try_guess);
     }
 }

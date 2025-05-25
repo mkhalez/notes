@@ -17,6 +17,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     manager.cpp \
+    privatemanager.cpp \
     registration.cpp
 
 HEADERS += \
@@ -27,6 +28,7 @@ HEADERS += \
     filemanagerforregistration.h \
     mainwindow.h \
     manager.h \
+    privatemanager.h \
     registration.h
 
 FORMS += \

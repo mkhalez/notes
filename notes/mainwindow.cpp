@@ -11,7 +11,10 @@
 
 
 MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow), manager() {
+    : QMainWindow(parent),
+      ui(new Ui::MainWindow),
+      manager(),
+      private_manager() {
     ui->setupUi(this);
 
     this->setWindowTitle("MIND STORAGE");
@@ -330,7 +333,7 @@ void MainWindow::PrivateClick() {
                                                    Qt::SmoothTransformation));
                         private_button->setIcon(icon2);
                     } else {
-                        qDebug() << correct_password;
+                        //qDebug() << correct_password;
                     }
                 });
         }

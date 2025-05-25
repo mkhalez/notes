@@ -6,7 +6,8 @@
 
 class Manager {
    public:
-    Manager();
+    Manager(bool version = true);
+
 
     size_t number_of_item = 0;
     QStringList list_of_user_files;
@@ -36,6 +37,8 @@ class Manager {
     /*void AddToDoListToManager(QPushButton* to_do_list);
     void AddDRrawingToManager(QPushButton* draw);*/
     /*void print();*/
+   protected:
+    virtual void Initialization();
 
    private:
     //QVector<QPushButton*> notes;

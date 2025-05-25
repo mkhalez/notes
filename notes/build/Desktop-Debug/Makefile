@@ -60,6 +60,7 @@ SOURCES       = ../../authentication.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
 		../../manager.cpp \
+		../../privatemanager.cpp \
 		../../registration.cpp moc_authentication.cpp \
 		moc_dialogfornote.cpp \
 		moc_dialogfortodolist.cpp \
@@ -73,6 +74,7 @@ OBJECTS       = authentication.o \
 		main.o \
 		mainwindow.o \
 		manager.o \
+		privatemanager.o \
 		registration.o \
 		moc_authentication.o \
 		moc_dialogfornote.o \
@@ -152,6 +154,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/spec_pre.prf \
 		../../filemanagerforregistration.h \
 		../../mainwindow.h \
 		../../manager.h \
+		../../privatemanager.h \
 		../../registration.h ../../authentication.cpp \
 		../../dialogfornote.cpp \
 		../../dialogfortodolist.cpp \
@@ -160,6 +163,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/spec_pre.prf \
 		../../main.cpp \
 		../../mainwindow.cpp \
 		../../manager.cpp \
+		../../privatemanager.cpp \
 		../../registration.cpp
 QMAKE_TARGET  = notes
 DESTDIR       = 
@@ -328,8 +332,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../authentication.h ../../dialogfornote.h ../../dialogfortodolist.h ../../filemanagerfornote.h ../../filemanagerforregistration.h ../../mainwindow.h ../../manager.h ../../registration.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../authentication.cpp ../../dialogfornote.cpp ../../dialogfortodolist.cpp ../../filemanagerfornote.cpp ../../filemanagerforregistration.cpp ../../main.cpp ../../mainwindow.cpp ../../manager.cpp ../../registration.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../authentication.h ../../dialogfornote.h ../../dialogfortodolist.h ../../filemanagerfornote.h ../../filemanagerforregistration.h ../../mainwindow.h ../../manager.h ../../privatemanager.h ../../registration.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../authentication.cpp ../../dialogfornote.cpp ../../dialogfortodolist.cpp ../../filemanagerfornote.cpp ../../filemanagerforregistration.cpp ../../main.cpp ../../mainwindow.cpp ../../manager.cpp ../../privatemanager.cpp ../../registration.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../authentication.ui ../../dialogfornote.ui ../../dialogfortodolist.ui ../../mainwindow.ui ../../registration.ui $(DISTDIR)/
 
 
@@ -366,6 +370,7 @@ compiler_moc_header_make_all: moc_authentication.cpp moc_dialogfornote.cpp moc_d
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_authentication.cpp moc_dialogfornote.cpp moc_dialogfortodolist.cpp moc_mainwindow.cpp moc_registration.cpp
 moc_authentication.cpp: ../../authentication.h \
+		../../filemanagerforregistration.h \
 		moc_predefs.h \
 		/usr/lib/qt6/libexec/moc
 	/usr/lib/qt6/libexec/moc $(DEFINES) --include /home/mkh-alez/pet_project/notes/build/Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -I/home/mkh-alez/pet_project/notes -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../authentication.h -o moc_authentication.cpp
@@ -386,12 +391,13 @@ moc_dialogfortodolist.cpp: ../../dialogfortodolist.h \
 
 moc_mainwindow.cpp: ../../mainwindow.h \
 		../../authentication.h \
-		../../registration.h \
 		../../filemanagerforregistration.h \
+		../../registration.h \
 		../../dialogfornote.h \
 		../../filemanagerfornote.h \
 		../../manager.h \
 		../../dialogfortodolist.h \
+		../../privatemanager.h \
 		moc_predefs.h \
 		/usr/lib/qt6/libexec/moc
 	/usr/lib/qt6/libexec/moc $(DEFINES) --include /home/mkh-alez/pet_project/notes/build/Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -I/home/mkh-alez/pet_project/notes -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../mainwindow.h -o moc_mainwindow.cpp
@@ -440,6 +446,7 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 ####### Compile
 
 authentication.o: ../../authentication.cpp ../../authentication.h \
+		../../filemanagerforregistration.h \
 		ui_authentication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o authentication.o ../../authentication.cpp
 
@@ -463,27 +470,33 @@ filemanagerforregistration.o: ../../filemanagerforregistration.cpp ../../fileman
 
 main.o: ../../main.cpp ../../mainwindow.h \
 		../../authentication.h \
-		../../registration.h \
 		../../filemanagerforregistration.h \
-		../../dialogfornote.h \
-		../../filemanagerfornote.h \
-		../../manager.h \
-		../../dialogfortodolist.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../main.cpp
-
-mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
-		../../authentication.h \
 		../../registration.h \
-		../../filemanagerforregistration.h \
 		../../dialogfornote.h \
 		../../filemanagerfornote.h \
 		../../manager.h \
 		../../dialogfortodolist.h \
+		../../privatemanager.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../main.cpp
+
+mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
+		../../authentication.h \
+		../../filemanagerforregistration.h \
+		../../registration.h \
+		../../dialogfornote.h \
+		../../filemanagerfornote.h \
+		../../manager.h \
+		../../dialogfortodolist.h \
+		../../privatemanager.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../../mainwindow.cpp
 
 manager.o: ../../manager.cpp ../../manager.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o manager.o ../../manager.cpp
+
+privatemanager.o: ../../privatemanager.cpp ../../privatemanager.h \
+		../../manager.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o privatemanager.o ../../privatemanager.cpp
 
 registration.o: ../../registration.cpp ../../registration.h \
 		../../filemanagerforregistration.h \

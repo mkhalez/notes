@@ -20,6 +20,11 @@ class authentication : public QWidget {
 
     QString hashPassword(const QString& password);
     FileManagerForRegistration file_manager;
+    bool is_success_authentication = false;
+    QString correct_password = "";
+
+   protected:
+    void closeEvent(QCloseEvent* event) override;
 
    private slots:
     void CheckUser();

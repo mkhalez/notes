@@ -1,4 +1,5 @@
 #include "authentication.h"
+#include <QCloseEvent>
 #include <QCryptographicHash>
 #include <QMessageBox>
 #include "ui_authentication.h"
@@ -53,7 +54,7 @@ authentication::authentication(QWidget* parent)
 
     connect(ui->closeButton, &QPushButton::clicked, this, [this] {
         close();
-        emit(finishAuthenticationDialogWork(false, ""));
+        emit(finishAuthenticationDialogWork(is_success_authentication, ""));
     });
     connect(ui->continueButton, &QPushButton::clicked, this,
             &authentication::CheckUser);
@@ -72,6 +73,12 @@ QString authentication::hashPassword(const QString& password) {
     return QString(hash.toHex());
 }
 
+void authentication::closeEvent(QCloseEvent* event) {
+    emit finishAuthenticationDialogWork(is_success_authentication,
+                                        correct_password);
+    event->accept();
+}
+
 void authentication::CheckUser() {
     QString try_guess = ui->passwordEdit->text();
     QString hash_of_guess = hashPassword(try_guess);
@@ -85,7 +92,9 @@ void authentication::CheckUser() {
                              "password is not correct", QMessageBox::Ok);
         ui->passwordEdit->clear();
     } else {
+
+        is_success_authentication = true;
+        correct_password = try_guess;
         this->close();
-        finishAuthenticationDialogWork(true, try_guess);
     }
 }

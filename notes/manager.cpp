@@ -3,7 +3,12 @@
 #include <QTextStream>
 
 
-Manager::Manager() {
+Manager::Manager(bool version) {
+    if (version)
+        Initialization();
+}
+
+void Manager::Initialization() {
     QString folder_path = "data_of_user";
 
     QDir dir(folder_path);

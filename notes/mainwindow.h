@@ -11,6 +11,7 @@
 #include "dialogfortodolist.h"
 #include "filemanagerforregistration.h"
 #include "manager.h"
+#include "privatemanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -44,6 +45,7 @@ class MainWindow : public QMainWindow {
 
 
     Manager manager;
+    PrivateManager private_manager;
 
     bool isPrivate = false;
 

@@ -5,6 +5,10 @@ PrivateManager::PrivateManager() : Manager(false) {
     Initialization();
 }
 
+void PrivateManager::SetKey(QString key) {
+    this->key = key;
+}
+
 void PrivateManager::Initialization() {
     QString folder_path = "data_of_user/private_data";
 

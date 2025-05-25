@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
       manager(),
+
+
       private_manager() {
     ui->setupUi(this);
 
@@ -279,42 +281,50 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 }
 
 void MainWindow::PrivateClick() {
-    if (!isPrivate && !manager.isOpenPrivate) {
+    if (!isPrivate && !private_manager.isOpenPrivate) {
 
         registration_file_manager.CreateFile("data_of_program", "first_using");
         int first_line =
             manager.ReadFirstLine("data_of_program", "first_using");
+        isPrivate = true;
 
         if (first_line == -1) {
-            QPixmap pixmap1(
+            /*QPixmap pixmap1(
                 "data_of_program/photo_for_private_button/open_yey.svg");
             QIcon icon1(pixmap1.scaled(50, 50, Qt::KeepAspectRatio,
                                        Qt::SmoothTransformation));
-            private_button->setIcon(icon1);
+            private_button->setIcon(icon1);*/
             dialog_registration = new registration();
-            manager.isOpenPrivate = true;
+
+            //private_manager.isOpenPrivate = true;
             dialog_registration->setAttribute(Qt::WA_DeleteOnClose);
             dialog_registration->show();
             connect(dialog_registration, &registration::destroyed, this,
                     [this]() {
-                        manager.isOpenPrivate = false;
+                        //private_manager.isOpenPrivate = false;
                         dialog_registration = nullptr;
                         isPrivate = false;
-                        QPixmap pixmap2(
+                        /*QPixmap pixmap2(
                             "data_of_program/photo_for_private_button/"
                             "new_var.webp");
                         QIcon icon2(pixmap2.scaled(50, 50, Qt::KeepAspectRatio,
                                                    Qt::SmoothTransformation));
-                        private_button->setIcon(icon2);
+                        private_button->setIcon(icon2);*/
                     });
         } else if (first_line == 0) {
+
+            /*
             QPixmap pixmap1(
                 "data_of_program/photo_for_private_button/open_yey.svg");
             QIcon icon1(pixmap1.scaled(50, 50, Qt::KeepAspectRatio,
                                        Qt::SmoothTransformation));
             private_button->setIcon(icon1);
+            private_manager.isOpenPrivate = true;*/
+
+            isPrivate = true;
+
             dialog_authentication = new authentication();
-            manager.isOpenPrivate = true;
+
             dialog_authentication->setAttribute(Qt::WA_DeleteOnClose);
 
             dialog_authentication->show();
@@ -323,20 +333,38 @@ void MainWindow::PrivateClick() {
                 &authentication::finishAuthenticationDialogWork, this,
                 [this](bool success_authentication, QString correct_password) {
                     if (!success_authentication) {
-                        manager.isOpenPrivate = false;
+                        //private_manager.isOpenPrivate = false;
                         dialog_authentication = nullptr;
                         isPrivate = false;
-                        QPixmap pixmap2(
+                        /*QPixmap pixmap2(
                             "data_of_program/photo_for_private_button/"
                             "new_var.webp");
                         QIcon icon2(pixmap2.scaled(50, 50, Qt::KeepAspectRatio,
                                                    Qt::SmoothTransformation));
-                        private_button->setIcon(icon2);
+                        private_button->setIcon(icon2);*/
                     } else {
                         //qDebug() << correct_password;
+
+                        QPixmap pixmap1(
+                            "data_of_program/photo_for_private_button/"
+                            "open_yey.svg");
+                        QIcon icon1(pixmap1.scaled(50, 50, Qt::KeepAspectRatio,
+                                                   Qt::SmoothTransformation));
+                        private_button->setIcon(icon1);
+                        private_manager.isOpenPrivate = true;
+                        private_manager.SetKey(correct_password);
                     }
                 });
         }
+    } else if (isPrivate && private_manager.isOpenPrivate) {
+        isPrivate = false;
+        private_manager.isOpenPrivate = false;
+        QPixmap pixmap2(
+            "data_of_program/photo_for_private_button/"
+            "new_var.webp");
+        QIcon icon2(pixmap2.scaled(50, 50, Qt::KeepAspectRatio,
+                                   Qt::SmoothTransformation));
+        private_button->setIcon(icon2);
     }
 }
 

@@ -11,7 +11,6 @@ class Manager {
 
     size_t number_of_item = 0;
     QStringList list_of_user_files;
-    bool isOpenPrivate = false;
     //dialogfornote* dialog;
 
 

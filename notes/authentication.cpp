@@ -91,6 +91,7 @@ void authentication::CheckUser() {
                              "rror",
                              "password is not correct", QMessageBox::Ok);
         ui->passwordEdit->clear();
+        ui->passwordEdit->setFocus();
     } else {
 
         is_success_authentication = true;

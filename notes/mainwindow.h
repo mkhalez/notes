@@ -47,7 +47,7 @@ class MainWindow : public QMainWindow {
     Manager manager;
     PrivateManager private_manager;
 
-    bool isPrivate = false;
+    bool isOpenPrivateDialog = false;
 
     QPushButton* private_button;
 

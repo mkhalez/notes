@@ -66,8 +66,8 @@ void Manager::FillIsOpenButton(QPushButton* button, bool value = false) {
     is_open_button.insert(std::make_pair(button, value));
 }
 
-void Manager::CreateFile(int number, int type) {
-    QDir dir("data_of_user");
+void Manager::CreateFile(int number, int type, QString folder) {
+    QDir dir(folder);
 
     QString filePath = dir.filePath(QString::number(number) + "data.txt");
 

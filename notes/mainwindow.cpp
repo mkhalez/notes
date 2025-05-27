@@ -281,12 +281,12 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 }
 
 void MainWindow::PrivateClick() {
-    if (!isPrivate && !private_manager.isOpenPrivate) {
+    if (!isOpenPrivateDialog && !private_manager.isOpenPrivate) {
 
         registration_file_manager.CreateFile("data_of_program", "first_using");
         int first_line =
             manager.ReadFirstLine("data_of_program", "first_using");
-        isPrivate = true;
+        isOpenPrivateDialog = true;
 
         if (first_line == -1) {
             /*QPixmap pixmap1(
@@ -303,7 +303,7 @@ void MainWindow::PrivateClick() {
                     [this]() {
                         //private_manager.isOpenPrivate = false;
                         dialog_registration = nullptr;
-                        isPrivate = false;
+                        isOpenPrivateDialog = false;
                         /*QPixmap pixmap2(
                             "data_of_program/photo_for_private_button/"
                             "new_var.webp");
@@ -321,7 +321,7 @@ void MainWindow::PrivateClick() {
             private_button->setIcon(icon1);
             private_manager.isOpenPrivate = true;*/
 
-            isPrivate = true;
+            isOpenPrivateDialog = true;
 
             dialog_authentication = new authentication();
 
@@ -335,7 +335,7 @@ void MainWindow::PrivateClick() {
                     if (!success_authentication) {
                         //private_manager.isOpenPrivate = false;
                         dialog_authentication = nullptr;
-                        isPrivate = false;
+                        isOpenPrivateDialog = false;
                         /*QPixmap pixmap2(
                             "data_of_program/photo_for_private_button/"
                             "new_var.webp");
@@ -344,7 +344,8 @@ void MainWindow::PrivateClick() {
                         private_button->setIcon(icon2);*/
                     } else {
                         //qDebug() << correct_password;
-
+                        // случай isPrivate = false; private_manager.isOpenPrivate = true;
+                        isOpenPrivateDialog = false;
                         QPixmap pixmap1(
                             "data_of_program/photo_for_private_button/"
                             "open_yey.svg");
@@ -356,8 +357,8 @@ void MainWindow::PrivateClick() {
                     }
                 });
         }
-    } else if (isPrivate && private_manager.isOpenPrivate) {
-        isPrivate = false;
+    } else if (!isOpenPrivateDialog && private_manager.isOpenPrivate) {
+        isOpenPrivateDialog = false;
         private_manager.isOpenPrivate = false;
         QPixmap pixmap2(
             "data_of_program/photo_for_private_button/"
@@ -416,7 +417,7 @@ void MainWindow::AddNoteHelper() {
             &MainWindow::showContextMenu);
     manager.FillIsOpenButton(button, false);
 
-    manager.CreateFile(currentNumber, 0);
+    manager.CreateFile(currentNumber, 0, "data_of_user");
     manager.number_of_item++;
 }
 
@@ -496,7 +497,7 @@ void MainWindow::AddToDoListHelper() {
             &MainWindow::showContextMenu);
     manager.FillIsOpenButton(button, false);
 
-    manager.CreateFile(currentNumber, 1);
+    manager.CreateFile(currentNumber, 1, "data_of_user");
     manager.number_of_item++;
 }
 

@@ -9,6 +9,20 @@ void PrivateManager::SetKey(QString key) {
     this->key = key;
 }
 
+QString PrivateManager::Encrypt(QString text) {
+    QString result;
+    for (int i = 0; i < text.length(); ++i) {
+        QChar ch = text.at(i);
+        QChar keyCh = key.at(i % key.length());
+        result.append(QChar(ch.unicode() ^ keyCh.unicode()));
+    }
+    return result;
+}
+
+QString PrivateManager::Decrypt(QString text) {
+    return Encrypt(text);
+}
+
 void PrivateManager::Initialization() {
     QString folder_path = "data_of_user/private_data";
 

@@ -10,6 +10,9 @@ class PrivateManager : Manager {
 
    private:
     QString key;
+    QString Encrypt(QString text);
+    QString Decrypt(QString text);
+
 
    protected:
     void Initialization() override;

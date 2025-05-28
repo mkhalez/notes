@@ -15,7 +15,7 @@ class dialogfortodolist : public QWidget {
 
    public:
     explicit dialogfortodolist(QPushButton* button, Manager* manager,
-                               QWidget* parent = nullptr);
+                               QString folder, QWidget* parent = nullptr);
     ~dialogfortodolist();
 
 
@@ -27,6 +27,7 @@ class dialogfortodolist : public QWidget {
     QPushButton* correct_button;
     FileManagerForNote file_manager;
     void ConstructorCrossOutTask(int current_row);
+    QString folder;
 
    private slots:
     void onItemClicked();

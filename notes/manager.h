@@ -19,8 +19,8 @@ class Manager {
     void DeleteFile(const QString& folderPath, const QString& fileName);
     QString NameForTitle(const QString& folderPath, const QString& fileName);
     //void OpenFileWithContent(QPushButton* button);
-    void FillIsOpenButton(QPushButton* button, bool value);
-    void CreateFile(int number, int type, QString folder);
+    void FillIsOpenButton(QPushButton* button, QString folder, bool value);
+    virtual void CreateFile(int number, int type, QString folder);
     bool DoHaveFile(QString folder_path, QString name_of_file);
     int ReadFirstLine(QString folder_path, QString name_of_file);
     QStringList GetListOfFileByCreationTime(const QString& directoryPath);

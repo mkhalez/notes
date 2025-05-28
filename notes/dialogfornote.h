@@ -15,7 +15,7 @@ class dialogfornote : public QWidget {
 
    public:
     explicit dialogfornote(QPushButton* button, Manager* manager,
-                           QWidget* parent = nullptr);
+                           QString folder, QWidget* parent = nullptr);
     ~dialogfornote();
 
    private:
@@ -23,6 +23,7 @@ class dialogfornote : public QWidget {
     Manager* manager;
     FileManagerForNote file_manager;
     QPushButton* button;
+    QString folder;
 
    private slots:
     void onCrossOutClicked();

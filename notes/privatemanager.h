@@ -1,8 +1,12 @@
 #ifndef PRIVATEMANAGER_H
 #define PRIVATEMANAGER_H
+#include <openssl/evp.h>
+#include <openssl/rand.h>
+#include <QByteArray>
+#include <QString>
 #include "manager.h"
 
-class PrivateManager : Manager {
+class PrivateManager : public Manager {
    public:
     PrivateManager();
     void SetKey(QString key);
@@ -10,12 +14,13 @@ class PrivateManager : Manager {
 
    private:
     QString key;
-    QString Encrypt(QString text);
-    QString Decrypt(QString text);
+    QString encryptAES(const QString& plaintext);
+    QString decryptAES(const QString& ciphertext);
 
 
    protected:
     void Initialization() override;
+    void CreateFile(int number, int type, QString folder) override;
 };
 
 #endif	// PRIVATEMANAGER_H

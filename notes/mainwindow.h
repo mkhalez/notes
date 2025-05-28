@@ -13,6 +13,7 @@
 #include "manager.h"
 #include "privatemanager.h"
 
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -42,7 +43,8 @@ class MainWindow : public QMainWindow {
 
 
     void showContextMenu(const QPoint& pos);
-
+    void ClearButton();
+    void Initialization();
 
     Manager manager;
     PrivateManager private_manager;

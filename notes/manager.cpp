@@ -59,8 +59,9 @@ void Manager::AddToDoListToManager(QPushButton* to_do_list,
     dialog->show();
 }*/
 
-void Manager::FillIsOpenButton(QPushButton* button, bool value = false) {
-    QDir dir("data_of_user");
+void Manager::FillIsOpenButton(QPushButton* button, QString folder,
+                               bool value = false) {
+    QDir dir(folder);
     dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
     QStringList files = dir.entryList();
     is_open_button.insert(std::make_pair(button, value));
@@ -76,8 +77,6 @@ void Manager::CreateFile(int number, int type, QString folder) {
         QTextStream out(&file);
         out << QString::number(type);
         file.close();
-    } else {
-        qWarning() << "Не удалось создать файл:" << filePath;
     }
 }
 
@@ -133,7 +132,12 @@ QStringList Manager::GetListOfFileByCreationTime(const QString& directoryPath) {
 }
 
 QString Manager::GetNameOfFileThanksPtr(QPushButton* ptr) {
-    return notes[ptr];
+    auto it = notes.find(ptr);
+
+    if (it != notes.end())
+        return notes[ptr];
+
+    return to_do_list[ptr];
 }
 
 void Manager::DeleteFile(const QString& folderPath, const QString& fileName) {

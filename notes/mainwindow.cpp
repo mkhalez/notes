@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget* parent)
 
 
       private_manager() {
+
     ui->setupUi(this);
 
     this->setWindowTitle("MIND STORAGE");
@@ -119,7 +120,10 @@ MainWindow::MainWindow(QWidget* parent)
     /*connect(drawingAction, &QAction::triggered, this,
             &MainWindow::AddDrawingHelper);*/
     //qDebug() << manager.number_of_item;
-    if (manager.number_of_item > 0) {
+
+    Initialization();
+
+    /*if (manager.number_of_item > 0) {
         buttons_layout->addStretch();
     }
 
@@ -170,18 +174,16 @@ MainWindow::MainWindow(QWidget* parent)
             connect(button, &QPushButton::clicked, this, [this, button]() {
                 OpenFileWithContent(button, manager.notes[button]);
             });
-            /*(button, &QPushButton::clicked, this,
-                [this, button]() { manager.OpenFileWithContent(button); });*/
+
             manager.FillIsOpenButton(button, false);
         } else if (type_of_button == 1) {
             connect(button, &QPushButton::clicked, this, [this, button]() {
                 OpenFileWithContent(button, manager.to_do_list[button]);
             });
-            /*(button, &QPushButton::clicked, this,
-                [this, button]() { manager.OpenFileWithContent(button); });*/
+
             manager.FillIsOpenButton(button, false);
         }
-    }
+    }*/
 
     /*for (int i = 0; i < manager.number_of_item; i++) {
         if (manager.DoHaveFile("data_of_user",
@@ -264,8 +266,119 @@ void MainWindow::showContextMenu(const QPoint& pos) {
             // 3. Удалить саму кнопку
             button->deleteLater();
 
-            QString name_of_file = manager.GetNameOfFileThanksPtr(button);
-            manager.DeleteFile("data_of_user", name_of_file);
+            auto& current_manager =
+                private_manager.isOpenPrivate ? private_manager : manager;
+
+            QString name_of_file =
+                current_manager.GetNameOfFileThanksPtr(button);
+            manager.DeleteFile(private_manager.isOpenPrivate
+                                   ? "data_of_user/private_data"
+                                   : "data_of_user",
+                               name_of_file);
+        }
+    }
+}
+
+void MainWindow::ClearButton() {
+    // Удаляем все виджеты-кнопки из layout, кроме системных кнопок (если нужно)
+    QLayoutItem* item;
+    while ((item = buttons_layout->takeAt(0)) != nullptr) {
+        if (item->widget()) {
+            QPushButton* button = qobject_cast<QPushButton*>(item->widget());
+            // Пропускаем системные кнопки (private_button, add_button и т.д.)
+            if (button && button != private_button && button != add_button) {
+                item->widget()->deleteLater();	// Удаляем только с UI
+            }
+        }
+        delete item;
+    }
+}
+
+void MainWindow::Initialization() {
+    ClearButton();
+    auto& current_manager =
+        private_manager.isOpenPrivate ? private_manager : manager;
+    if (current_manager.number_of_item > 0) {
+        buttons_layout->addStretch();
+    }
+
+    for (int i = 0; i < current_manager.list_of_user_files.length(); i++) {
+
+        int type_of_button = current_manager.ReadFirstLine(
+            private_manager.isOpenPrivate ? "data_of_user/private_data"
+                                          : "data_of_user",
+            current_manager.list_of_user_files[i]);
+        if (type_of_button == -1)
+            continue;
+
+        QString name_for_button = current_manager.NameForTitle(
+            private_manager.isOpenPrivate ? "data_of_user/private_data"
+                                          : "data_of_user",
+            current_manager.list_of_user_files[i]);
+        QPushButton* button = nullptr;
+
+        if (name_for_button.isEmpty() && type_of_button == 0) {
+            button = new QPushButton(QString("New Note"), buttons_container);
+            buttons_layout->insertWidget(buttons_layout->count() - 1, button);
+            current_manager.AddNoteToManager(
+                button, current_manager.list_of_user_files[i]);
+        } else if (name_for_button.isEmpty() && type_of_button == 1) {
+            button =
+                new QPushButton(QString("New To-Do List"), buttons_container);
+            buttons_layout->insertWidget(buttons_layout->count() - 1, button);
+            current_manager.AddToDoListToManager(
+                button, current_manager.list_of_user_files[i]);
+        } else if (!name_for_button.isEmpty() && type_of_button == 0) {
+            button =
+                new QPushButton(QString(name_for_button), buttons_container);
+            buttons_layout->insertWidget(buttons_layout->count() - 1, button);
+            current_manager.AddNoteToManager(
+                button, current_manager.list_of_user_files[i]);
+        } else if (!name_for_button.isEmpty() && type_of_button == 1) {
+            button =
+                new QPushButton(QString(name_for_button), buttons_container);
+            buttons_layout->insertWidget(buttons_layout->count() - 1, button);
+            current_manager.AddToDoListToManager(
+                button, current_manager.list_of_user_files[i]);
+        }
+
+
+        button->setContextMenuPolicy(Qt::CustomContextMenu);
+
+        button->setStyleSheet(
+            "QPushButton {"
+            "   font-size: 20px;"
+            "}");
+
+
+        connect(button, &QPushButton::customContextMenuRequested, this,
+                &MainWindow::showContextMenu);
+        if (type_of_button == 0) {
+            connect(button, &QPushButton::clicked, this,
+                    [this, button, &current_manager]() {
+                        OpenFileWithContent(button,
+                                            current_manager.notes[button]);
+                    });
+            /*(button, &QPushButton::clicked, this,
+                [this, button]() { current_manager.OpenFileWithContent(button); });*/
+            current_manager.FillIsOpenButton(button,
+                                             private_manager.isOpenPrivate
+                                                 ? "data_of_user/private_data"
+                                                 : "data_of_user",
+                                             false);
+        } else if (type_of_button == 1) {
+            connect(button, &QPushButton::clicked, this,
+                    [this, button, &current_manager]() {
+                        OpenFileWithContent(button,
+                                            current_manager.to_do_list[button]);
+                    });
+            /*(button, &QPushButton::clicked, this,
+                [this, button]() { current_manager.OpenFileWithContent(button); });*/
+            current_manager.FillIsOpenButton(button,
+                                             private_manager.isOpenPrivate
+                                                 ? "data_of_user/private_data"
+                                                 : "data_of_user",
+                                             false);
         }
     }
 }
@@ -354,6 +467,9 @@ void MainWindow::PrivateClick() {
                         private_button->setIcon(icon1);
                         private_manager.isOpenPrivate = true;
                         private_manager.SetKey(correct_password);
+
+
+                        Initialization();
                     }
                 });
         }
@@ -366,6 +482,8 @@ void MainWindow::PrivateClick() {
         QIcon icon2(pixmap2.scaled(50, 50, Qt::KeepAspectRatio,
                                    Qt::SmoothTransformation));
         private_button->setIcon(icon2);
+
+        Initialization();
     }
 }
 
@@ -387,7 +505,9 @@ void MainWindow::AddClick() {
 }
 
 void MainWindow::AddNoteHelper() {
-    if (manager.number_of_item == 0) {
+    auto& current_manager =
+        private_manager.isOpenPrivate ? private_manager : manager;
+    if (current_manager.number_of_item == 0) {
         buttons_layout->addStretch();
     }
 
@@ -395,17 +515,18 @@ void MainWindow::AddNoteHelper() {
         new QPushButton(QString("New Note"), buttons_container);
     buttons_layout->insertWidget(buttons_layout->count() - 1, button);
 
-    int currentNumber = manager.number_of_item;
+    int currentNumber = current_manager.number_of_item;
     currentNumber++;
 
-    manager.AddNoteToManager(button,
-                             QString::number(currentNumber) + "data.txt");
+    current_manager.AddNoteToManager(
+        button, QString::number(currentNumber) + "data.txt");
 
-    connect(button, &QPushButton::clicked, this, [this, button]() {
-        OpenFileWithContent(button, manager.notes[button]);
-    });
+    connect(button, &QPushButton::clicked, this,
+            [this, button, &current_manager]() {
+                OpenFileWithContent(button, current_manager.notes[button]);
+            });
     /*connect(button, &QPushButton::clicked, this,
-            [this, button]() { manager.OpenFileWithContent(button); });*/
+            [this, button]() { current_manager.OpenFileWithContent(button); });*/
 
     button->setContextMenuPolicy(Qt::CustomContextMenu);
     button->setStyleSheet(
@@ -415,10 +536,17 @@ void MainWindow::AddNoteHelper() {
         "}");
     connect(button, &QPushButton::customContextMenuRequested, this,
             &MainWindow::showContextMenu);
-    manager.FillIsOpenButton(button, false);
+    current_manager.FillIsOpenButton(button,
+                                     private_manager.isOpenPrivate
+                                         ? "data_of_user/private_data"
+                                         : "data_of_user",
+                                     false);
 
-    manager.CreateFile(currentNumber, 0, "data_of_user");
-    manager.number_of_item++;
+    current_manager.CreateFile(currentNumber, 0,
+                               private_manager.isOpenPrivate
+                                   ? "data_of_user/private_data"
+                                   : "data_of_user");
+    current_manager.number_of_item++;
 }
 
 void MainWindow::OpenFileWithContent(QPushButton* button,
@@ -426,39 +554,59 @@ void MainWindow::OpenFileWithContent(QPushButton* button,
     if (manager.is_open_button[button]) {
         return;
     }
-    int type_of_file = manager.ReadFirstLine("data_of_user", name_of_file);
+    int type_of_file = manager.ReadFirstLine(private_manager.isOpenPrivate
+                                                 ? "data_of_user/private_data"
+                                                 : "data_of_user",
+                                             name_of_file);
     if (type_of_file == 0) {
-        Manager* ptr = &manager;
-        dialog = new dialogfornote(button, ptr);
-        manager.is_open_button[button] = true;
+        auto& current_manager =
+            private_manager.isOpenPrivate ? private_manager : manager;
+        auto* ptr = &current_manager;
+        dialog = new dialogfornote(button, ptr,
+                                   private_manager.isOpenPrivate
+                                       ? "data_of_user/private_data"
+                                       : "data_of_user");
+        current_manager.is_open_button[button] = true;
         dialog->setAttribute(Qt::WA_DeleteOnClose);
         dialog->show();
 
-        connect(dialog, &dialogfornote::destroyed, this, [this, button]() {
-            manager.is_open_button[button] = false;
-            dialog = nullptr;
-            QString name_of_button =
-                manager.NameForTitle("data_of_user", manager.notes[button]);
-            if (!name_of_button.isEmpty()) {
-                button->setText(name_of_button);
-            }
-        });
+        connect(dialog, &dialogfornote::destroyed, this,
+                [this, button, &current_manager]() {
+                    current_manager.is_open_button[button] = false;
+                    dialog = nullptr;
+                    QString name_of_button = current_manager.NameForTitle(
+                        private_manager.isOpenPrivate
+                            ? "data_of_user/private_data"
+                            : "data_of_user",
+                        current_manager.notes[button]);
+                    if (!name_of_button.isEmpty()) {
+                        button->setText(name_of_button);
+                    }
+                });
     }
 
 
     else if (type_of_file == 1) {
-        Manager* ptr = &manager;
-        dialog_for_to_do_list = new dialogfortodolist(button, ptr);
-        manager.is_open_button[button] = true;
+        auto& current_manager =
+            private_manager.isOpenPrivate ? private_manager : manager;
+        Manager* ptr = &current_manager;
+        dialog_for_to_do_list = new dialogfortodolist(
+            button, ptr,
+            private_manager.isOpenPrivate ? "data_of_user/private_data"
+                                          : "data_of_user");
+        current_manager.is_open_button[button] = true;
         dialog_for_to_do_list->setAttribute(Qt::WA_DeleteOnClose);
         dialog_for_to_do_list->show();
 
         connect(dialog_for_to_do_list, &dialogfortodolist::destroyed, this,
-                [this, button]() {
-                    manager.is_open_button[button] = false;
+                [this, button, &current_manager]() {
+                    current_manager.is_open_button[button] = false;
                     dialog_for_to_do_list = nullptr;
-                    QString name_of_button = manager.NameForTitle(
-                        "data_of_user", manager.to_do_list[button]);
+                    QString name_of_button = current_manager.NameForTitle(
+                        private_manager.isOpenPrivate
+                            ? "data_of_user/private_data"
+                            : "data_of_user",
+                        current_manager.to_do_list[button]);
                     if (!name_of_button.isEmpty()) {
                         button->setText(name_of_button);
                     }
@@ -467,7 +615,9 @@ void MainWindow::OpenFileWithContent(QPushButton* button,
 }
 
 void MainWindow::AddToDoListHelper() {
-    if (manager.number_of_item == 0) {
+    auto& current_manager =
+        private_manager.isOpenPrivate ? private_manager : manager;
+    if (current_manager.number_of_item == 0) {
         buttons_layout->addStretch();
     }
 
@@ -475,17 +625,18 @@ void MainWindow::AddToDoListHelper() {
         new QPushButton(QString("New To-Do List"), buttons_container);
     buttons_layout->insertWidget(buttons_layout->count() - 1, button);
 
-    int currentNumber = manager.number_of_item;
+    int currentNumber = current_manager.number_of_item;
     currentNumber++;
 
-    manager.AddToDoListToManager(button,
-                                 QString::number(currentNumber) + "data.txt");
+    current_manager.AddToDoListToManager(
+        button, QString::number(currentNumber) + "data.txt");
 
-    connect(button, &QPushButton::clicked, this, [this, button]() {
-        OpenFileWithContent(button, manager.to_do_list[button]);
-    });
+    connect(button, &QPushButton::clicked, this,
+            [this, button, &current_manager]() {
+                OpenFileWithContent(button, current_manager.to_do_list[button]);
+            });
     /*connect(button, &QPushButton::clicked, this,
-            [this, button]() { manager.OpenFileWithContent(button); });*/
+            [this, button]() { current_manager.OpenFileWithContent(button); });*/
 
     button->setContextMenuPolicy(Qt::CustomContextMenu);
     button->setStyleSheet(
@@ -495,10 +646,17 @@ void MainWindow::AddToDoListHelper() {
         "}");
     connect(button, &QPushButton::customContextMenuRequested, this,
             &MainWindow::showContextMenu);
-    manager.FillIsOpenButton(button, false);
+    current_manager.FillIsOpenButton(button,
+                                     private_manager.isOpenPrivate
+                                         ? "data_of_user/private_data"
+                                         : "data_of_user",
+                                     false);
 
-    manager.CreateFile(currentNumber, 1, "data_of_user");
-    manager.number_of_item++;
+    current_manager.CreateFile(currentNumber, 1,
+                               private_manager.isOpenPrivate
+                                   ? "data_of_user/private_data"
+                                   : "data_of_user");
+    current_manager.number_of_item++;
 }
 
 /*void MainWindow::AddToDoListHelper() {

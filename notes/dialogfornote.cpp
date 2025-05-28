@@ -3,10 +3,16 @@
 
 
 dialogfornote::dialogfornote(QPushButton* button, Manager* manager,
-                             QWidget* parent)
+                             QString folder, QWidget* parent)
     : QWidget(parent), ui(new Ui::dialogfornote) {
     ui->setupUi(this);
+    this->folder = folder;
+    //qDebug() << folder;
     this->manager = manager;
+    /*for (int i = 0; i < manager->list_of_user_files.length(); i++) {
+
+        qDebug() << manager->list_of_user_files[i];
+    }*/
     this->button = button;
     this->resize(700, 600);
     this->setWindowTitle("Note");
@@ -16,10 +22,10 @@ dialogfornote::dialogfornote(QPushButton* button, Manager* manager,
     int size = 50;
 
     ui->textEdit->setHtml(
-        file_manager.ReadFile("data_of_user", manager->notes[button]));
+        file_manager.ReadFile(folder, manager->notes[button]));
 
     ui->titleEdit->setText(
-        manager->NameForTitle("data_of_user", manager->notes[button]));
+        manager->NameForTitle(folder, manager->notes[button]));
     if (ui->titleEdit->text().isEmpty()) {
         ui->titleEdit->setFocus();
     } else {
@@ -102,9 +108,9 @@ dialogfornote::dialogfornote(QPushButton* button, Manager* manager,
 dialogfornote::~dialogfornote() {
     QString text;
     text = ui->titleEdit->text();
-    file_manager.SaveTitle("data_of_user", manager->notes[button], text);
+    file_manager.SaveTitle(folder, manager->notes[button], text);
     text = ui->textEdit->toHtml();
-    file_manager.SaveFile("data_of_user", manager->notes[button], text);
+    file_manager.SaveFile(folder, manager->notes[button], text);
 
 
     delete ui;

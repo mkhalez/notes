@@ -4,9 +4,10 @@
 #include "ui_dialogfortodolist.h"
 
 dialogfortodolist::dialogfortodolist(QPushButton* button, Manager* manager,
-                                     QWidget* parent)
+                                     QString folder, QWidget* parent)
     : QWidget(parent), ui(new Ui::dialogfortodolist) {
     ui->setupUi(this);
+    this->folder = folder;
     this->resize(700, 600);
     this->setWindowTitle("To-Do List");
     this->manager = manager;
@@ -15,8 +16,8 @@ dialogfortodolist::dialogfortodolist(QPushButton* button, Manager* manager,
 
     ui->titleEdit->setPlaceholderText("enter the title..");
 
-    QStringList tasks = file_manager.ReadFileForToDoList(
-        "data_of_user", manager->to_do_list[button]);
+    QStringList tasks =
+        file_manager.ReadFileForToDoList(folder, manager->to_do_list[button]);
 
     for (int i = 0; i < tasks.length(); i++) {
         AddTask(tasks[i]);
@@ -40,7 +41,7 @@ dialogfortodolist::dialogfortodolist(QPushButton* button, Manager* manager,
         "}");
 
     ui->titleEdit->setText(
-        manager->NameForTitle("data_of_user", manager->to_do_list[button]));
+        manager->NameForTitle(folder, manager->to_do_list[button]));
 
     ui->txtTask->setPlaceholderText("enter the task..");
     ui->txtTask->setFocus();
@@ -190,7 +191,7 @@ dialogfortodolist::dialogfortodolist(QPushButton* button, Manager* manager,
 dialogfortodolist::~dialogfortodolist() {
     QString text;
     text = ui->titleEdit->text();
-    file_manager.SaveTitle("data_of_user", manager->to_do_list[button], text);
+    file_manager.SaveTitle(folder, manager->to_do_list[button], text);
 
     QStringList tasks;
     for (int i = 0; i < ui->listWidget->count(); ++i) {
@@ -202,8 +203,8 @@ dialogfortodolist::~dialogfortodolist() {
         }
     }
 
-    file_manager.SaveFileForToDoList("data_of_user",
-                                     manager->to_do_list[button], tasks);
+    file_manager.SaveFileForToDoList(folder, manager->to_do_list[button],
+                                     tasks);
 
     delete ui;
 }

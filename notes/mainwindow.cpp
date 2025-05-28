@@ -13,12 +13,15 @@
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
-      manager(),
+      manager("data_of_user"),
 
 
-      private_manager() {
+      private_manager("data_of_user/private_data") {
 
     ui->setupUi(this);
+
+    manager.isOpenPrivate = false;
+    private_manager.isOpenPrivate = false;
 
     this->setWindowTitle("MIND STORAGE");
 
@@ -311,10 +314,15 @@ void MainWindow::Initialization() {
         if (type_of_button == -1)
             continue;
 
+
         QString name_for_button = current_manager.NameForTitle(
-            private_manager.isOpenPrivate ? "data_of_user/private_data"
+            current_manager.isOpenPrivate ? "data_of_user/private_data"
                                           : "data_of_user",
             current_manager.list_of_user_files[i]);
+        if (current_manager.isOpenPrivate) {
+            name_for_button = crypto.decryptAES(name_for_button);
+        }
+
         QPushButton* button = nullptr;
 
         if (name_for_button.isEmpty() && type_of_button == 0) {
@@ -466,7 +474,8 @@ void MainWindow::PrivateClick() {
                                                    Qt::SmoothTransformation));
                         private_button->setIcon(icon1);
                         private_manager.isOpenPrivate = true;
-                        private_manager.SetKey(correct_password);
+
+                        crypto.SetKey(correct_password);
 
 
                         Initialization();
@@ -536,6 +545,7 @@ void MainWindow::AddNoteHelper() {
         "}");
     connect(button, &QPushButton::customContextMenuRequested, this,
             &MainWindow::showContextMenu);
+
     current_manager.FillIsOpenButton(button,
                                      private_manager.isOpenPrivate
                                          ? "data_of_user/private_data"
@@ -551,7 +561,9 @@ void MainWindow::AddNoteHelper() {
 
 void MainWindow::OpenFileWithContent(QPushButton* button,
                                      QString name_of_file) {
-    if (manager.is_open_button[button]) {
+    auto& current_manager =
+        private_manager.isOpenPrivate ? private_manager : manager;
+    if (current_manager.is_open_button[button]) {
         return;
     }
     int type_of_file = manager.ReadFirstLine(private_manager.isOpenPrivate
@@ -559,13 +571,12 @@ void MainWindow::OpenFileWithContent(QPushButton* button,
                                                  : "data_of_user",
                                              name_of_file);
     if (type_of_file == 0) {
-        auto& current_manager =
-            private_manager.isOpenPrivate ? private_manager : manager;
-        auto* ptr = &current_manager;
-        dialog = new dialogfornote(button, ptr,
+        dialog = new dialogfornote(button, &current_manager,
                                    private_manager.isOpenPrivate
                                        ? "data_of_user/private_data"
-                                       : "data_of_user");
+                                       : "data_of_user",
+                                   &crypto);
+
         current_manager.is_open_button[button] = true;
         dialog->setAttribute(Qt::WA_DeleteOnClose);
         dialog->show();
@@ -579,8 +590,15 @@ void MainWindow::OpenFileWithContent(QPushButton* button,
                             ? "data_of_user/private_data"
                             : "data_of_user",
                         current_manager.notes[button]);
+
                     if (!name_of_button.isEmpty()) {
-                        button->setText(name_of_button);
+                        if (private_manager.isOpenPrivate) {
+                            button->setText(crypto.decryptAES(name_of_button));
+                        } else {
+                            button->setText(name_of_button);
+                        }
+                    } else {
+                        button->setText("New Note");
                     }
                 });
     }
@@ -591,9 +609,10 @@ void MainWindow::OpenFileWithContent(QPushButton* button,
             private_manager.isOpenPrivate ? private_manager : manager;
         Manager* ptr = &current_manager;
         dialog_for_to_do_list = new dialogfortodolist(
-            button, ptr,
+            button, &current_manager,
             private_manager.isOpenPrivate ? "data_of_user/private_data"
-                                          : "data_of_user");
+                                          : "data_of_user",
+            &crypto);
         current_manager.is_open_button[button] = true;
         dialog_for_to_do_list->setAttribute(Qt::WA_DeleteOnClose);
         dialog_for_to_do_list->show();
@@ -608,7 +627,13 @@ void MainWindow::OpenFileWithContent(QPushButton* button,
                             : "data_of_user",
                         current_manager.to_do_list[button]);
                     if (!name_of_button.isEmpty()) {
-                        button->setText(name_of_button);
+                        if (private_manager.isOpenPrivate) {
+                            button->setText(crypto.decryptAES(name_of_button));
+                        } else {
+                            button->setText(name_of_button);
+                        }
+                    } else {
+                        button->setText("New To-Do List");
                     }
                 });
     }

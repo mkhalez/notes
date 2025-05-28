@@ -7,11 +7,11 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QVBoxLayout>
+#include "crypto.h"
 #include "dialogfornote.h"
 #include "dialogfortodolist.h"
 #include "filemanagerforregistration.h"
 #include "manager.h"
-#include "privatemanager.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -40,6 +40,7 @@ class MainWindow : public QMainWindow {
     dialogfortodolist* dialog_for_to_do_list = nullptr;
     registration* dialog_registration = nullptr;
     authentication* dialog_authentication = nullptr;
+    Crypto crypto;
 
 
     void showContextMenu(const QPoint& pos);
@@ -47,7 +48,8 @@ class MainWindow : public QMainWindow {
     void Initialization();
 
     Manager manager;
-    PrivateManager private_manager;
+    Manager private_manager;
+    //PrivateManager private_manager;
 
     bool isOpenPrivateDialog = false;
 

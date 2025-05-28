@@ -3,8 +3,10 @@
 
 #include <QPushButton>
 #include <QWidget>
+#include "crypto.h"
 #include "filemanagerfornote.h"
 #include "manager.h"
+#include "privatefilemanagerfornote.h"
 
 namespace Ui {
 class dialogfornote;
@@ -15,13 +17,15 @@ class dialogfornote : public QWidget {
 
    public:
     explicit dialogfornote(QPushButton* button, Manager* manager,
-                           QString folder, QWidget* parent = nullptr);
+                           QString folder, Crypto* crypto,
+                           QWidget* parent = nullptr);
     ~dialogfornote();
 
    private:
     Ui::dialogfornote* ui;
     Manager* manager;
-    FileManagerForNote file_manager;
+    PrivateFileManagerForNote* private_file_manager;
+    FileManagerForNote* file_manager;
     QPushButton* button;
     QString folder;
 

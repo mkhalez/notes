@@ -4,20 +4,27 @@
 #include "ui_dialogfortodolist.h"
 
 dialogfortodolist::dialogfortodolist(QPushButton* button, Manager* manager,
-                                     QString folder, QWidget* parent)
+                                     QString folder, Crypto* crypto,
+                                     QWidget* parent)
     : QWidget(parent), ui(new Ui::dialogfortodolist) {
     ui->setupUi(this);
     this->folder = folder;
     this->resize(700, 600);
-    this->setWindowTitle("To-Do List");
+
     this->manager = manager;
     this->button = button;
+    if (manager->isOpenPrivate) {
+        file_manager = new PrivateFileManagerForNote(crypto);
+    } else {
+        file_manager = new FileManagerForNote();
+    }
+    this->setWindowTitle("To-Do List");
     this->setStyleSheet("QWidget#dialogfornote { font-size: 10pt; }");
 
     ui->titleEdit->setPlaceholderText("enter the title..");
 
     QStringList tasks =
-        file_manager.ReadFileForToDoList(folder, manager->to_do_list[button]);
+        file_manager->ReadFileForToDoList(folder, manager->to_do_list[button]);
 
     for (int i = 0; i < tasks.length(); i++) {
         AddTask(tasks[i]);
@@ -40,8 +47,8 @@ dialogfortodolist::dialogfortodolist(QPushButton* button, Manager* manager,
         "   border: 2px solid #4CAF50;"	 // Зелёная рамка
         "}");
 
-    ui->titleEdit->setText(
-        manager->NameForTitle(folder, manager->to_do_list[button]));
+    ui->titleEdit->setText(crypto->decryptAES(
+        manager->NameForTitle(folder, manager->to_do_list[button])));
 
     ui->txtTask->setPlaceholderText("enter the task..");
     ui->txtTask->setFocus();
@@ -191,7 +198,7 @@ dialogfortodolist::dialogfortodolist(QPushButton* button, Manager* manager,
 dialogfortodolist::~dialogfortodolist() {
     QString text;
     text = ui->titleEdit->text();
-    file_manager.SaveTitle(folder, manager->to_do_list[button], text);
+    file_manager->SaveTitle(folder, manager->to_do_list[button], text);
 
     QStringList tasks;
     for (int i = 0; i < ui->listWidget->count(); ++i) {
@@ -203,8 +210,8 @@ dialogfortodolist::~dialogfortodolist() {
         }
     }
 
-    file_manager.SaveFileForToDoList(folder, manager->to_do_list[button],
-                                     tasks);
+    file_manager->SaveFileForToDoList(folder, manager->to_do_list[button],
+                                      tasks);
 
     delete ui;
 }

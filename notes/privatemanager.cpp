@@ -1,4 +1,4 @@
-#include "privatemanager.h"
+/*#include "privatemanager.h"
 #include <QDir>
 
 PrivateManager::PrivateManager() : Manager(false) {
@@ -7,6 +7,10 @@ PrivateManager::PrivateManager() : Manager(false) {
 
 void PrivateManager::SetKey(QString key) {
     this->key = key;
+}
+
+QString PrivateManager::GetKy() {
+    return key;
 }
 
 QString PrivateManager::encryptAES(const QString& plaintext) {
@@ -125,7 +129,7 @@ void PrivateManager::Initialization() {
 }
 
 void PrivateManager::CreateFile(int number, int type, QString folder) {
-    QDir dir("data_of_user/private_data");	// Всегда используем приватный путь
+    QDir dir("data_of_user/private_data");
 
     QString filePath = dir.filePath(QString::number(number) + "data.txt");
 
@@ -136,3 +140,28 @@ void PrivateManager::CreateFile(int number, int type, QString folder) {
         file.close();
     }
 }
+
+QString PrivateManager::NameForTitle(const QString& folderPath,
+                                     const QString& fileName) {
+    QFile file(folderPath + "/" + fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return "";
+    }
+
+    QTextStream in(&file);
+    QString content;
+    int lineCount = 0;
+
+    QString line;
+
+    while (!in.atEnd()) {
+        line = in.readLine();
+        if (lineCount == 1) {
+            return line;
+        }
+        lineCount++;
+    }
+
+    file.close();
+    return decryptAES(content);
+}*/

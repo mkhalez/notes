@@ -4,7 +4,9 @@
 #include <filemanagerfornote.h>
 #include <QPushButton>
 #include <QWidget>
+#include "crypto.h"
 #include "manager.h"
+#include "privatefilemanagerfornote.h"
 
 namespace Ui {
 class dialogfortodolist;
@@ -15,7 +17,8 @@ class dialogfortodolist : public QWidget {
 
    public:
     explicit dialogfortodolist(QPushButton* button, Manager* manager,
-                               QString folder, QWidget* parent = nullptr);
+                               QString folder, Crypto* crypto,
+                               QWidget* parent = nullptr);
     ~dialogfortodolist();
 
 
@@ -25,7 +28,8 @@ class dialogfortodolist : public QWidget {
     QMenu* dropdownMenu;
     QPushButton* button;
     QPushButton* correct_button;
-    FileManagerForNote file_manager;
+    FileManagerForNote* file_manager;
+    PrivateFileManagerForNote* private_file_manager;
     void ConstructorCrossOutTask(int current_row);
     QString folder;
 

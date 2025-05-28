@@ -6,18 +6,20 @@
 
 class Manager {
    public:
-    Manager(bool version = true);
+    Manager(QString work_folder, bool version = true);
 
-
+    QString work_folder;
     size_t number_of_item = 0;
     QStringList list_of_user_files;
+    bool isOpenPrivate;
     //dialogfornote* dialog;
 
 
     void AddNoteToManager(QPushButton* note, QString name_of_file);
     void AddToDoListToManager(QPushButton* to_do_list, QString name_of_file);
     void DeleteFile(const QString& folderPath, const QString& fileName);
-    QString NameForTitle(const QString& folderPath, const QString& fileName);
+    virtual QString NameForTitle(const QString& folderPath,
+                                 const QString& fileName);
     //void OpenFileWithContent(QPushButton* button);
     void FillIsOpenButton(QPushButton* button, QString folder, bool value);
     virtual void CreateFile(int number, int type, QString folder);

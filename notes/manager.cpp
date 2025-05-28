@@ -3,21 +3,21 @@
 #include <QTextStream>
 
 
-Manager::Manager(bool version) {
+Manager::Manager(QString work_folder, bool version) {
+    this->work_folder = work_folder;
     if (version)
         Initialization();
 }
 
 void Manager::Initialization() {
-    QString folder_path = "data_of_user";
 
-    QDir dir(folder_path);
+    QDir dir(work_folder);
 
     if (!dir.exists()) {
         dir.mkpath(".");
     }
 
-    list_of_user_files = GetListOfFileByCreationTime(folder_path);
+    list_of_user_files = GetListOfFileByCreationTime(work_folder);
     if (list_of_user_files.isEmpty()) {
         number_of_item = 0;
     } else {

@@ -1,14 +1,19 @@
 #include "dialogfornote.h"
+#include "privatefilemanagerfornote.h"
 #include "ui_dialogfornote.h"
 
 
 dialogfornote::dialogfornote(QPushButton* button, Manager* manager,
-                             QString folder, QWidget* parent)
+                             QString folder, Crypto* crypto, QWidget* parent)
     : QWidget(parent), ui(new Ui::dialogfornote) {
     ui->setupUi(this);
     this->folder = folder;
-    //qDebug() << folder;
     this->manager = manager;
+    if (manager->isOpenPrivate) {
+        file_manager = new PrivateFileManagerForNote(crypto);
+    } else {
+        file_manager = new FileManagerForNote();
+    }
     /*for (int i = 0; i < manager->list_of_user_files.length(); i++) {
 
         qDebug() << manager->list_of_user_files[i];
@@ -22,10 +27,12 @@ dialogfornote::dialogfornote(QPushButton* button, Manager* manager,
     int size = 50;
 
     ui->textEdit->setHtml(
-        file_manager.ReadFile(folder, manager->notes[button]));
+        file_manager->ReadFile(folder, manager->notes[button]));
 
-    ui->titleEdit->setText(
-        manager->NameForTitle(folder, manager->notes[button]));
+    ui->titleEdit->setText(crypto->decryptAES(
+        manager->NameForTitle(folder, manager->notes[button])));
+
+
     if (ui->titleEdit->text().isEmpty()) {
         ui->titleEdit->setFocus();
     } else {
@@ -108,9 +115,9 @@ dialogfornote::dialogfornote(QPushButton* button, Manager* manager,
 dialogfornote::~dialogfornote() {
     QString text;
     text = ui->titleEdit->text();
-    file_manager.SaveTitle(folder, manager->notes[button], text);
+    file_manager->SaveTitle(folder, manager->notes[button], text);
     text = ui->textEdit->toHtml();
-    file_manager.SaveFile(folder, manager->notes[button], text);
+    file_manager->SaveFile(folder, manager->notes[button], text);
 
 
     delete ui;

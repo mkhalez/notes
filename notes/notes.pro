@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     authentication.cpp \
+    crypto.cpp \
     dialogfornote.cpp \
     dialogfortodolist.cpp \
     filemanagerfornote.cpp \
@@ -17,17 +18,20 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     manager.cpp \
+    privatefilemanagerfornote.cpp \
     privatemanager.cpp \
     registration.cpp
 
 HEADERS += \
     authentication.h \
+    crypto.h \
     dialogfornote.h \
     dialogfortodolist.h \
     filemanagerfornote.h \
     filemanagerforregistration.h \
     mainwindow.h \
     manager.h \
+    privatefilemanagerfornote.h \
     privatemanager.h \
     registration.h
 

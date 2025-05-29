@@ -9,13 +9,16 @@ int Search::Distance(QString str_1, QString str_2) {
 
     QVector<QVector<int>> matrix(length_1 + 1, QVector<int>(length_2 + 1, 0));
 
+
     for (size_t i = 0; i <= length_1; i++) {
         matrix[i][0] = i;
     }
 
+
     for (size_t j = 0; j <= length_2; j++) {
         matrix[0][j] = j;
     }
+
 
     for (size_t i = 1; i <= length_1; i++) {
         for (size_t j = 1; j <= length_2; j++) {
@@ -31,4 +34,15 @@ int Search::Distance(QString str_1, QString str_2) {
         }
     }
     return matrix[length_1][length_2];
+}
+
+bool Search::TheSameString(QString str_1, QString str_2) {
+    if (str_1.length() != str_2.length())
+        return false;
+
+    for (size_t i = 0; i < str_1.length(); i++) {
+        if (str_1[i] != str_2[i])
+            return false;
+    }
+    return true;
 }

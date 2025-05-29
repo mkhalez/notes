@@ -472,8 +472,10 @@ void MainWindow::SearchInitialization() {
             qDebug() << search.Distance(text_to_search, button->text());
             if (button && button != private_button && button != add_button &&
                 button != searchButton &&
-                search.Distance(text_to_search, button->text()) > 3) {
-                qDebug() << "check";
+                (search.Distance(text_to_search, button->text()) > 3 ||
+                 search.Distance(text_to_search, button->text()) == 3 &&
+                     search.TheSameString(text_to_search, button->text()) ==
+                         true)) {
                 QLayoutItem* itemToDelete = buttons_layout->takeAt(i);
                 itemToDelete->widget()->deleteLater();
                 delete itemToDelete;

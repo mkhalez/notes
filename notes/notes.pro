@@ -20,7 +20,8 @@ SOURCES += \
     manager.cpp \
     privatefilemanagerfornote.cpp \
     privatemanager.cpp \
-    registration.cpp
+    registration.cpp \
+    search.cpp
 
 HEADERS += \
     authentication.h \
@@ -33,7 +34,8 @@ HEADERS += \
     manager.h \
     privatefilemanagerfornote.h \
     privatemanager.h \
-    registration.h
+    registration.h \
+    search.h
 
 FORMS += \
     authentication.ui \

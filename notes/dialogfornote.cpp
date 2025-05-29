@@ -29,8 +29,13 @@ dialogfornote::dialogfornote(QPushButton* button, Manager* manager,
     ui->textEdit->setHtml(
         file_manager->ReadFile(folder, manager->notes[button]));
 
-    ui->titleEdit->setText(crypto->decryptAES(
-        manager->NameForTitle(folder, manager->notes[button])));
+    if (manager->isOpenPrivate) {
+        ui->titleEdit->setText(crypto->decryptAES(
+            manager->NameForTitle(folder, manager->notes[button])));
+    } else {
+        ui->titleEdit->setText(
+            manager->NameForTitle(folder, manager->notes[button]));
+    }
 
 
     if (ui->titleEdit->text().isEmpty()) {

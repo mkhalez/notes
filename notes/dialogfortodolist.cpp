@@ -47,8 +47,14 @@ dialogfortodolist::dialogfortodolist(QPushButton* button, Manager* manager,
         "   border: 2px solid #4CAF50;"	 // Зелёная рамка
         "}");
 
-    ui->titleEdit->setText(crypto->decryptAES(
-        manager->NameForTitle(folder, manager->to_do_list[button])));
+    if (manager->isOpenPrivate) {
+        ui->titleEdit->setText(crypto->decryptAES(
+            manager->NameForTitle(folder, manager->to_do_list[button])));
+    } else {
+        ui->titleEdit->setText(
+            manager->NameForTitle(folder, manager->to_do_list[button]));
+    }
+
 
     ui->txtTask->setPlaceholderText("enter the task..");
     ui->txtTask->setFocus();

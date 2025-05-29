@@ -6,6 +6,7 @@
 #include <QScrollArea>
 #include <QStyle>
 #include <QVBoxLayout>
+#include "search.h"
 
 #include "ui_mainwindow.h"
 
@@ -27,6 +28,45 @@ MainWindow::MainWindow(QWidget* parent)
 
     main_container = new QWidget(this);
     main_layout = new QVBoxLayout(main_container);
+
+    QWidget* searchWidget = new QWidget(this);
+    QHBoxLayout* searchLayout = new QHBoxLayout(searchWidget);
+    searchLayout->setContentsMargins(15, 0, 15, 0);
+    searchLineEdit = new QLineEdit(this);
+    searchLineEdit->setPlaceholderText("Search...");
+    searchLineEdit->setStyleSheet(
+        "QLineEdit {"
+        "   border: 2px solid gray;"
+        "   border-radius: 5px;"
+        "   padding: 3px;"
+        "}"
+        "QLineEdit:focus {"
+        "   border: 2px solid #4CAF50;"
+        "}");
+    QFont font = searchLineEdit->font();
+    font.setPointSize(18);
+    searchLineEdit->setFont(font);
+    searchButton = new QPushButton(this);
+    searchButton->setStyleSheet(
+        "QPushButton {"
+        "   background-color: #90EE90;"
+        "   color: black;"
+        "   border-radius: 10px;"
+
+        "   padding: 0px;"
+        "   border: none;"
+        "   font-size: 25px;"
+        "   padding-top: 10px;"
+        "}"
+        "QPushButton:hover { background-color: #45a049; }");
+    searchButton->setFixedSize(43, 43);
+    searchButton->setText("🔍");
+    searchLayout->addWidget(searchLineEdit);
+    searchLayout->addWidget(searchButton);
+    main_layout->addWidget(searchWidget);
+    connect(searchButton, &QPushButton::clicked, this,
+            &MainWindow::SearchInitialization);
+
 
     scrollArea = new QScrollArea();
     scrollArea->setWidgetResizable(true);
@@ -289,7 +329,8 @@ void MainWindow::ClearButton() {
         if (item->widget()) {
             QPushButton* button = qobject_cast<QPushButton*>(item->widget());
             // Пропускаем системные кнопки (private_button, add_button и т.д.)
-            if (button && button != private_button && button != add_button) {
+            if (button && button != private_button && button != add_button &&
+                button != searchButton) {
                 item->widget()->deleteLater();	// Удаляем только с UI
             }
         }
@@ -389,6 +430,75 @@ void MainWindow::Initialization() {
                                              false);
         }
     }
+}
+
+void MainWindow::SearchInitialization() {
+    if (searchButton->text() == "×") {
+        Initialization();
+        searchButton->setText("🔍");
+
+        searchButton->setStyleSheet(
+            "QPushButton {"
+            "   background-color: #90EE90;"
+            "   color: black;"
+            "   border-radius: 10px;"
+
+            "   padding: 0px;"
+            "   border: none;"
+            "   font-size: 25px;"
+            "   padding-top: 10px;"
+            "}"
+            "QPushButton:hover { background-color: #45a049; }");
+        QFont font = searchLineEdit->font();
+        font.setPointSize(18);
+        searchLineEdit->setFont(font);
+        searchLineEdit->clear();
+        searchLineEdit->setFocus();
+        return;
+    }
+
+    QString text_to_search = searchLineEdit->text();
+    if (text_to_search.isEmpty())
+        return;
+
+    Search search;
+    int i = 0;
+    while (i < buttons_layout->count()) {
+
+        QLayoutItem* item = buttons_layout->itemAt(i);
+        if (item && item->widget()) {
+            QPushButton* button = qobject_cast<QPushButton*>(item->widget());
+            qDebug() << button->text();
+            qDebug() << search.Distance(text_to_search, button->text());
+            if (button && button != private_button && button != add_button &&
+                button != searchButton &&
+                search.Distance(text_to_search, button->text()) > 3) {
+                qDebug() << "check";
+                QLayoutItem* itemToDelete = buttons_layout->takeAt(i);
+                itemToDelete->widget()->deleteLater();
+                delete itemToDelete;
+            } else {
+                i++;
+            }
+        } else {
+            i++;
+        }
+    }
+    searchButton->setText("×");
+    searchButton->setStyleSheet(
+        "QPushButton {"
+        "   background-color: #90EE90;"
+        "   color: black;"
+        "   border-radius: 10px;"
+
+        "   padding: 0px;"
+        "   border: none;"
+        "   font-size: 25px;"
+        "}"
+        "QPushButton:hover { background-color: #45a049; }");
+    QFont font = searchLineEdit->font();
+    font.setPointSize(18);
+    searchLineEdit->setFont(font);
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {

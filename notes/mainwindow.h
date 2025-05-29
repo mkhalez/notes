@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 #include <authentication.h>
 #include <registration.h>
+#include <QLineEdit>
 #include <QMainWindow>
 #include <QMenu>
 #include <QPushButton>
@@ -42,10 +43,13 @@ class MainWindow : public QMainWindow {
     authentication* dialog_authentication = nullptr;
     Crypto crypto;
 
+    QLineEdit* searchLineEdit;
+
 
     void showContextMenu(const QPoint& pos);
     void ClearButton();
     void Initialization();
+
 
     Manager manager;
     Manager private_manager;
@@ -54,6 +58,7 @@ class MainWindow : public QMainWindow {
     bool isOpenPrivateDialog = false;
 
     QPushButton* private_button;
+    QPushButton* searchButton;
 
     bool isAdditing = false;
     QPushButton* add_button;
@@ -69,6 +74,7 @@ class MainWindow : public QMainWindow {
     void AddNoteHelper();
     void OpenFileWithContent(QPushButton* button, QString name_of_file);
     void AddToDoListHelper();
+    void SearchInitialization();
     /*void AddDrawingHelper();*/
 };
 #endif	// MAINWINDOW_H

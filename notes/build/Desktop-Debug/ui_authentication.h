@@ -29,6 +29,7 @@ public:
     QPushButton *continueButton;
     QPushButton *closeButton;
     QLabel *label_3;
+    QPushButton *checkPasswordButton;
 
     void setupUi(QWidget *authentication)
     {
@@ -37,7 +38,7 @@ public:
         authentication->resize(410, 277);
         layoutWidget = new QWidget(authentication);
         layoutWidget->setObjectName("layoutWidget");
-        layoutWidget->setGeometry(QRect(60, 110, 271, 60));
+        layoutWidget->setGeometry(QRect(60, 110, 271, 74));
         verticalLayout = new QVBoxLayout(layoutWidget);
         verticalLayout->setObjectName("verticalLayout");
         verticalLayout->setContentsMargins(0, 0, 0, 0);
@@ -51,18 +52,20 @@ public:
 
         passwordEdit = new QLineEdit(layoutWidget);
         passwordEdit->setObjectName("passwordEdit");
+        passwordEdit->setMinimumSize(QSize(0, 30));
+        passwordEdit->setEchoMode(QLineEdit::Password);
 
         verticalLayout->addWidget(passwordEdit);
 
         continueButton = new QPushButton(authentication);
         continueButton->setObjectName("continueButton");
-        continueButton->setGeometry(QRect(270, 210, 111, 31));
+        continueButton->setGeometry(QRect(280, 230, 111, 31));
         QFont font1;
         font1.setPointSize(18);
         continueButton->setFont(font1);
         closeButton = new QPushButton(authentication);
         closeButton->setObjectName("closeButton");
-        closeButton->setGeometry(QRect(10, 210, 111, 31));
+        closeButton->setGeometry(QRect(10, 230, 111, 31));
         closeButton->setFont(font1);
         label_3 = new QLabel(authentication);
         label_3->setObjectName("label_3");
@@ -70,6 +73,10 @@ public:
         QFont font2;
         font2.setPointSize(25);
         label_3->setFont(font2);
+        checkPasswordButton = new QPushButton(authentication);
+        checkPasswordButton->setObjectName("checkPasswordButton");
+        checkPasswordButton->setGeometry(QRect(340, 150, 41, 31));
+        checkPasswordButton->setFont(font2);
 
         retranslateUi(authentication);
 
@@ -83,6 +90,7 @@ public:
         continueButton->setText(QCoreApplication::translate("authentication", "continue", nullptr));
         closeButton->setText(QCoreApplication::translate("authentication", "close", nullptr));
         label_3->setText(QCoreApplication::translate("authentication", "authentication", nullptr));
+        checkPasswordButton->setText(QString());
     } // retranslateUi
 
 };

@@ -9,8 +9,16 @@ authentication::authentication(QWidget* parent)
     : QWidget(parent), ui(new Ui::authentication) {
     ui->setupUi(this);
 
-    this->setFixedSize(400, 280);
+    this->setFixedSize(400, 350);
     this->setWindowTitle("Authentication");
+
+    QPixmap pixmap2(
+        "data_of_program/photo_for_private_button/"
+        "new_var.webp");
+    QIcon icon2(
+        pixmap2.scaled(35, 35, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    ui->checkPasswordButton->setIcon(icon2);
+    ui->checkPasswordButton->setIconSize(QSize(35, 35));
 
     ui->passwordEdit->setStyleSheet(
         "QLineEdit {"
@@ -58,6 +66,8 @@ authentication::authentication(QWidget* parent)
     });
     connect(ui->continueButton, &QPushButton::clicked, this,
             &authentication::CheckUser);
+    connect(ui->checkPasswordButton, &QPushButton::clicked, this,
+            &authentication::ShowPassword);
 }
 
 authentication::~authentication() {
@@ -98,4 +108,27 @@ void authentication::CheckUser() {
         correct_password = try_guess;
         this->close();
     }
+}
+
+void authentication::ShowPassword() {
+    is_check_password = !is_check_password;
+    QString current_password = ui->checkPasswordButton->text();
+    if (is_check_password) {
+        ui->passwordEdit->setEchoMode(QLineEdit::PasswordEchoOnEdit);
+        QPixmap pixmap2(
+            "data_of_program/photo_for_private_button/"
+            "new_var.webp");
+        QIcon icon2(pixmap2.scaled(50, 50, Qt::KeepAspectRatio,
+                                   Qt::SmoothTransformation));
+        ui->checkPasswordButton->setIcon(icon2);
+
+    } else {
+        ui->passwordEdit->setEchoMode(QLineEdit::Normal);
+        QPixmap pixmap1(
+            "data_of_program/photo_for_private_button/open_yey.svg");
+        QIcon icon1(pixmap1.scaled(50, 50, Qt::KeepAspectRatio,
+                                   Qt::SmoothTransformation));
+        ui->checkPasswordButton->setIcon(icon1);
+    }
+    ui->checkPasswordButton->setText(current_password);
 }

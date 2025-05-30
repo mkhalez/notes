@@ -302,7 +302,9 @@ void MainWindow::showContextMenu(const QPoint& pos) {
     if (selectedAction == deleteAction) {
 
         int buttonIndex = buttons_layout->indexOf(button);
-        if (buttonIndex != -1) {
+        auto& current_manager =
+            private_manager.isOpenPrivate ? private_manager : manager;
+        if (buttonIndex != -1 && !current_manager.is_open_button[button]) {
             // 2. Удалить кнопку из layout
             buttons_layout->takeAt(buttonIndex);
 
@@ -393,9 +395,8 @@ void MainWindow::Initialization() {
 
 
         button->setContextMenuPolicy(Qt::CustomContextMenu);
-
         button->setStyleSheet(
-            "QPushButton {"
+            "QPushButton{"
             "   font-size: 20px;"
             "}");
 
@@ -468,14 +469,14 @@ void MainWindow::SearchInitialization() {
         QLayoutItem* item = buttons_layout->itemAt(i);
         if (item && item->widget()) {
             QPushButton* button = qobject_cast<QPushButton*>(item->widget());
-            qDebug() << button->text();
-            qDebug() << search.Distance(text_to_search, button->text());
+            /*qDebug() << button->text();
+            qDebug() << search.Distance(text_to_search, button->text());*/
             if (button && button != private_button && button != add_button &&
                 button != searchButton &&
                 (search.Distance(text_to_search, button->text()) > 3 ||
                  search.Distance(text_to_search, button->text()) == 3 &&
                      search.TheSameString(text_to_search, button->text()) ==
-                         true)) {
+                         false)) {
                 QLayoutItem* itemToDelete = buttons_layout->takeAt(i);
                 itemToDelete->widget()->deleteLater();
                 delete itemToDelete;
@@ -501,6 +502,7 @@ void MainWindow::SearchInitialization() {
     QFont font = searchLineEdit->font();
     font.setPointSize(18);
     searchLineEdit->setFont(font);
+    searchLineEdit->setFocus();
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {
@@ -591,6 +593,7 @@ void MainWindow::PrivateClick() {
 
 
                         Initialization();
+                        searchLineEdit->setFocus();
                     }
                 });
         }
@@ -605,6 +608,7 @@ void MainWindow::PrivateClick() {
         private_button->setIcon(icon2);
 
         Initialization();
+        searchLineEdit->setFocus();
     }
 }
 
@@ -776,6 +780,7 @@ void MainWindow::AddToDoListHelper() {
             [this, button]() { current_manager.OpenFileWithContent(button); });*/
 
     button->setContextMenuPolicy(Qt::CustomContextMenu);
+
     button->setStyleSheet(
         "QPushButton {"
         "   padding: 5px;"

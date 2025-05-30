@@ -45,7 +45,6 @@ class MainWindow : public QMainWindow {
 
     QLineEdit* searchLineEdit;
 
-
     void showContextMenu(const QPoint& pos);
     void ClearButton();
     void Initialization();

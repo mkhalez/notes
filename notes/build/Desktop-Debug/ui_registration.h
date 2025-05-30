@@ -41,7 +41,7 @@ public:
         registration->resize(400, 300);
         layoutWidget = new QWidget(registration);
         layoutWidget->setObjectName("layoutWidget");
-        layoutWidget->setGeometry(QRect(60, 70, 271, 60));
+        layoutWidget->setGeometry(QRect(60, 70, 271, 74));
         verticalLayout = new QVBoxLayout(layoutWidget);
         verticalLayout->setObjectName("verticalLayout");
         verticalLayout->setContentsMargins(0, 0, 0, 0);
@@ -55,12 +55,13 @@ public:
 
         firstPassword = new QLineEdit(layoutWidget);
         firstPassword->setObjectName("firstPassword");
+        firstPassword->setMinimumSize(QSize(0, 40));
 
         verticalLayout->addWidget(firstPassword);
 
         layoutWidget_2 = new QWidget(registration);
         layoutWidget_2->setObjectName("layoutWidget_2");
-        layoutWidget_2->setGeometry(QRect(60, 140, 271, 60));
+        layoutWidget_2->setGeometry(QRect(60, 160, 271, 74));
         verticalLayout_2 = new QVBoxLayout(layoutWidget_2);
         verticalLayout_2->setObjectName("verticalLayout_2");
         verticalLayout_2->setContentsMargins(0, 0, 0, 0);
@@ -72,6 +73,7 @@ public:
 
         secondPassword = new QLineEdit(layoutWidget_2);
         secondPassword->setObjectName("secondPassword");
+        secondPassword->setMinimumSize(QSize(0, 40));
 
         verticalLayout_2->addWidget(secondPassword);
 

@@ -21,6 +21,7 @@ class authentication : public QWidget {
     QString hashPassword(const QString& password);
     FileManagerForRegistration file_manager;
     bool is_success_authentication = false;
+    bool is_check_password = true;
     QString correct_password = "";
 
    protected:
@@ -28,6 +29,7 @@ class authentication : public QWidget {
 
    private slots:
     void CheckUser();
+    void ShowPassword();
 
    signals:
     void finishAuthenticationDialogWork(bool success, const QString& password);

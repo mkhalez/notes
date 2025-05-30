@@ -37,12 +37,10 @@ int Search::Distance(QString str_1, QString str_2) {
 }
 
 bool Search::TheSameString(QString str_1, QString str_2) {
-    if (str_1.length() != str_2.length())
-        return false;
 
     for (size_t i = 0; i < str_1.length(); i++) {
-        if (str_1[i] != str_2[i])
-            return false;
+        if (str_1[i] == str_2[i])
+            return true;
     }
-    return true;
+    return false;
 }

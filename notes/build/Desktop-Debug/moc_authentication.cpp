@@ -7,7 +7,7 @@
 *****************************************************************************/
 
 #include <memory>
-#include "../../authentication.h"
+#include "../../../../try_to_best_ui/notes/notes/authentication.h"
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'authentication.h' doesn't include <QObject>."

@@ -7,7 +7,7 @@
 *****************************************************************************/
 
 #include <memory>
-#include "../../dialogfornote.h"
+#include "../../../../try_to_best_ui/notes/notes/dialogfornote.h"
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'dialogfornote.h' doesn't include <QObject>."

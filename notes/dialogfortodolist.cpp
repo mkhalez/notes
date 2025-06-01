@@ -39,14 +39,13 @@ dialogfortodolist::dialogfortodolist(QPushButton* button, Manager* manager,
     ui->button_layout->addLayout(buttonsLayout);
     ui->titleEdit->setStyleSheet(
         "QLineEdit {"
-        "   border: 2px solid gray;"  // Обычная рамка
-        "   border-radius: 5px;"	  // Скругление углов
-        "   padding: 3px;"			  // Отступ текста от краёв
+        "   border: 2px solid gray;"
+        "   border-radius: 5px;"
+        "   padding: 3px;"
         "}"
-        "QLineEdit:focus {"				 // Стиль при фокусе
-        "   border: 2px solid #4CAF50;"	 // Зелёная рамка
+        "QLineEdit:focus {"
+        "   border: 2px solid #4CAF50;"
         "}");
-
     if (manager->isOpenPrivate) {
         ui->titleEdit->setText(crypto->decryptAES(
             manager->NameForTitle(folder, manager->to_do_list[button])));
@@ -61,12 +60,12 @@ dialogfortodolist::dialogfortodolist(QPushButton* button, Manager* manager,
 
     ui->txtTask->setStyleSheet(
         "QLineEdit {"
-        "   border: 2px solid gray;"  // Обычная рамка
-        "   border-radius: 5px;"	  // Скругление углов
-        "   padding: 3px;"			  // Отступ текста от краёв
+        "   border: 2px solid gray;"
+        "   border-radius: 5px;"
+        "   padding: 3px;"
         "}"
-        "QLineEdit:focus {"				 // Стиль при фокусе
-        "   border: 2px solid #4CAF50;"	 // Зелёная рамка
+        "QLineEdit:focus {"
+        "   border: 2px solid #4CAF50;"
         "}");
 
     QFont font = ui->txtTask->font();
@@ -81,45 +80,44 @@ dialogfortodolist::dialogfortodolist(QPushButton* button, Manager* manager,
 
     ui->addButton->setStyleSheet(
         "QPushButton {"
-        "   background-color: #90EE90;"	 // Светло-зеленый фон
-        "   color: black;"				 // Черный текст
-        "   border-radius: 5px;"  // Легкое закругление углов (меньше, чем было)
+        "   background-color: #90EE90;"
+        "   color: black;"
+        "   border-radius: 5px;"
         "   padding: 0px;"
-        "   border: none;"		// Нет границы
-        "   min-width: 65px;"	// Минимальная ширина
-        "   min-height: 40px;"	// Минимальная высота
-        "   font-size: 20px;"	// Размер текста
+        "   border: none;"
+        "   min-width: 65px;"
+        "   min-height: 40px;"
+        "   font-size: 20px;"
         "}"
         "QPushButton:hover {"
-        "   background-color: #45a049;"	 // Темно-зеленый при наведении
+        "   background-color: #45a049;"
         "}");
 
     ui->removeAllButton->setStyleSheet(
         "QPushButton {"
-        "   background-color: #90EE90;"	 // Светло-зеленый фон
-        "   color: black;"				 // Черный текст
-        "   border-radius: 5px;"  // Легкое закругление углов (меньше, чем было)
+        "   background-color: #90EE90;"
+        "   color: black;"
+        "   border-radius: 5px;"
         "   padding: 0px;"
-        "   border: none;"		// Нет границы
-        "   min-width: 75px;"	// Минимальная ширина
-        "   min-height: 45px;"	// Минимальная высота
-        "   font-size: 20px;"	// Размер текста
+        "   border: none;"
+        "   min-width: 75px;"
+        "   min-height: 45px;"
+        "   font-size: 20px;"
         "}"
         "QPushButton:hover {"
-        "   background-color: #45a049;"	 // Темно-зеленый при наведении
+        "   background-color: #45a049;"
         "}");
 
     ui->correctButton->setIcon(QIcon::fromTheme("document-edit"));
-    ui->correctButton->setIconSize(
-        QSize(32, 32));	 // Подберите подходящий размер
+    ui->correctButton->setIconSize(QSize(32, 32));
 
     ui->correctButton->setStyleSheet(
         "QPushButton {"
         "   background-color: #90EE90;"
         "   color: black;"
         "   border-radius: 10px;"
-        "   min-width: 45px;"	// Минимальная ширина
-        "   min-height: 45px;"	// Минимальная высота
+        "   min-width: 45px;"
+        "   min-height: 45px;"
         "   padding: 0px;"
         "   border: none;"
         "}"
@@ -129,29 +127,29 @@ dialogfortodolist::dialogfortodolist(QPushButton* button, Manager* manager,
     dropdownMenu = new QMenu(this);
     dropdownMenu->setStyleSheet(
         "QMenu {"
-        "    background-color: transparent;"  // Прозрачный фон самого меню
-        "    padding: 5px;"					  // Отступ вокруг всего меню
+        "    background-color: transparent;"
+        "    padding: 5px;"
         "}"
 
         "QMenu::item {"
-        "    background-color: #008000;"  // Зелёный цвет фона
-        "    border: 2px solid #45a049;"  // Контур
-        "    border-radius: 15px;"	// Сильное закругление (цилиндрический эффект)
-        "    margin: 4px 2px;"		// Вертикальные отступы между пунктами
-        "    padding: 8px 20px 8px 15px;"  // Большие внутренние отступы (вытянутость)
-        "    min-width: 100px;"			   // Минимальная ширина
-        "    font-size: 17px;"			   // Размер шрифта
+        "    background-color: #008000;"
+        "    border: 2px solid #45a049;"
+        "    border-radius: 15px;"
+        "    margin: 4px 2px;"
+        "    padding: 8px 20px 8px 15px;"
+        "    min-width: 100px;"
+        "    font-size: 17px;"
         "    text-align: left;"
-        "    color: white;"	 // Цвет текста
+        "    color: white;"
         "}"
 
         "QMenu::item:selected {"
-        "    background-color: #006400;"  // Темнее при выборе
-        "    border: 2px solid #2d7d32;"  // Контур при выборе
+        "    background-color: #006400;"
+        "    border: 2px solid #2d7d32;"
         "}"
 
         "QMenu::item:pressed {"
-        "    background-color: #004d00;"  // Ещё темнее при нажатии
+        "    background-color: #004d00;"
         "}");
 
     ui->listWidget->setStyleSheet(
@@ -165,12 +163,12 @@ dialogfortodolist::dialogfortodolist(QPushButton* button, Manager* manager,
         "}"
 
         "QListWidget::item:selected {"
-        "   background-color: #4CAF50;"	 // Зеленый цвет фона
-        "   color: white;"				 // Цвет текста
+        "   background-color: #4CAF50;"
+        "   color: white;"
         "}"
 
         "QListWidget::item:selected:!active {"
-        "   background-color: #4CAF50;"	 // Зеленый цвет, даже если виджет не в фокусе
+        "   background-color: #4CAF50;"
         "   color: white;"
         "}");
 
@@ -178,17 +176,9 @@ dialogfortodolist::dialogfortodolist(QPushButton* button, Manager* manager,
     QAction* СrossOutAction = dropdownMenu->addAction("cross out");
     QAction* RemoveAction = dropdownMenu->addAction("remove");
 
-    connect(ui->listWidget, &QListWidget::itemClicked, this,
-            &dialogfortodolist::onItemClicked);
-    connect(ui->listWidget, &QListWidget::itemSelectionChanged, this,
-            &dialogfortodolist::onItemSelectionChanged);
-
     connect(ui->txtTask, &QLineEdit::returnPressed, this,
             [this]() { AddTask(ui->txtTask->text()); });
 
-    /*            connect(button, &QPushButton::clicked, this, [this, button]() {
-                OpenFileWithContent(button, kToDoList);
-            });*/
     connect(ui->addButton, &QPushButton::clicked, this,
             [this]() { AddTask(); });
     connect(ui->correctButton, &QPushButton::clicked, this,
@@ -220,32 +210,6 @@ dialogfortodolist::~dialogfortodolist() {
                                       tasks);
 
     delete ui;
-}
-
-void dialogfortodolist::onItemClicked() {
-    int current_row = ui->listWidget->currentRow();
-    if (current_row >= 0) {
-        /*QListWidgetItem* item = ui->listWidget->item(current_row);
-        QFont font = item->font();
-
-        if (!font.strikeOut()) {
-            ui->btnCrossOut->setStyleSheet("background-color: white");
-        }
-
-        else {
-            ui->btnCrossOut->setStyleSheet("background-color: gray");
-        }
-        */
-    }
-}
-
-void dialogfortodolist::onItemSelectionChanged() {
-    // Получаем список выбранных элементов
-    QList<QListWidgetItem*> selected_items = ui->listWidget->selectedItems();
-
-    /*if (selected_items.isEmpty()) {
-        ui->btnCrossOut->setStyleSheet("background-color: white");
-    }*/
 }
 
 void dialogfortodolist::AddTask(QString text) {
@@ -307,19 +271,13 @@ void dialogfortodolist::RemoveAll() {
 }
 
 void dialogfortodolist::CorrectTask() {
-    // 1. Получаем правый верхний угол кнопки в глобальных координатах
     QPoint buttonTopRight =
         ui->correctButton->mapToGlobal(QPoint(ui->correctButton->width(), 0));
-
-    // 2. Вычисляем позицию меню:
-    //    - Смещаем влево на ширину меню (чтобы не выходило за экран)
-    //    - Смещаем вверх на высоту меню + дополнительный отступ
     int menuWidth = dropdownMenu->sizeHint().width();
     int menuHeight = dropdownMenu->sizeHint().height();
-    QPoint menuPos(buttonTopRight.x() - menuWidth,	  // Смещение влево
-                   buttonTopRight.y() - menuHeight);  // Смещение вверх
+    QPoint menuPos(buttonTopRight.x() - menuWidth,
+                   buttonTopRight.y() - menuHeight);
 
-    // 3. Открываем меню с "ступенчатым" смещением
     dropdownMenu->exec(menuPos);
 }
 
@@ -331,12 +289,10 @@ void dialogfortodolist::CrossOutTask() {
 
         if (!font.strikeOut()) {
             font.setStrikeOut(true);
-            //ui->btnCrossOut->setStyleSheet("background-color: gray");
         }
 
         else {
             font.setStrikeOut(false);
-            //ui->btnCrossOut->setStyleSheet("background-color: white");
         }
         item->setFont(font);
     }
@@ -349,12 +305,10 @@ void dialogfortodolist::ConstructorCrossOutTask(int current_row) {
 
         if (!font.strikeOut()) {
             font.setStrikeOut(true);
-            //ui->btnCrossOut->setStyleSheet("background-color: gray");
         }
 
         else {
             font.setStrikeOut(false);
-            //ui->btnCrossOut->setStyleSheet("background-color: white");
         }
         item->setFont(font);
     }

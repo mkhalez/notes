@@ -1,0 +1,25 @@
+ldd ./notes | grep "qt"
+ldd ./notes | grep -v "qt" | grep ".so"
+mkdir -p ~/notes_deploy
+cd ~/notes_deploy
+cp ~/pet_project/notes/build/Desktop-Release/notes ./
+mkdir libs
+ldd ./notes | grep -i qt
+cp /lib/x86_64-linux-gnu/libQt6Widgets.so.6 ./libs/
+cp /lib/x86_64-linux-gnu/libQt6Gui.so.6 ./libs/
+cp /lib/x86_64-linux-gnu/libQt6Core.so.6 ./libs/
+cp /lib/x86_64-linux-gnu/libQt6DBus.so.6 ./libs/
+mkdir -p ./libs/platforms
+cp /lib/x86_64-linux-gnu/qt6/plugins/platforms/* ./libs/platforms/
+nano run_notes.sh
+#!/bin/bash
+export LD_LIBRARY_PATH=$(dirname "$0")/libs:$LD_LIBRARY_PATH
+./notes "$@"
+chmod +x run_notes.sh
+./run_notes.sh
+добавить картинки 
+tar -czvf notes_linux.tar.gz -C ~/notes_deploy .
+на другом устройстройстве
+tar -xzvf notes_linux.tar.gz
+cd notes_deploy
+./run_notes.sh

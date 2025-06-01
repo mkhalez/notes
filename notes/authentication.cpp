@@ -22,12 +22,12 @@ authentication::authentication(QWidget* parent)
 
     ui->passwordEdit->setStyleSheet(
         "QLineEdit {"
-        "   border: 2px solid gray;"  // Обычная рамка
-        "   border-radius: 5px;"	  // Скругление углов
-        "   padding: 3px;"			  // Отступ текста от краёв
+        "   border: 2px solid gray;"
+        "   border-radius: 5px;"
+        "   padding: 3px;"
         "}"
-        "QLineEdit:focus {"				 // Стиль при фокусе
-        "   border: 2px solid #4CAF50;"	 // Зелёная рамка
+        "QLineEdit:focus {"
+        "   border: 2px solid #4CAF50;"
         "}");
 
     QFont font = ui->passwordEdit->font();
@@ -36,28 +36,28 @@ authentication::authentication(QWidget* parent)
 
     ui->continueButton->setStyleSheet(
         "QPushButton {"
-        "   background-color: #90EE90;"	 // Светло-зеленый фон
-        "   color: black;"				 // Черный текст
-        "   border-radius: 5px;"  // Легкое закругление углов (меньше, чем было)
+        "   background-color: #90EE90;"
+        "   color: black;"
+        "   border-radius: 5px;"
         "   padding: 0px;"
-        "   border: none;"	   // Нет границы
-        "   font-size: 18px;"  // Размер текста
+        "   border: none;"
+        "   font-size: 18px;"
         "}"
         "QPushButton:hover {"
-        "   background-color: #45a049;"	 // Темно-зеленый при наведении
+        "   background-color: #45a049;"
         "}");
 
     ui->closeButton->setStyleSheet(
         "QPushButton {"
-        "   background-color: #90EE90;"	 // Светло-зеленый фон
-        "   color: black;"				 // Черный текст
-        "   border-radius: 5px;"  // Легкое закругление углов (меньше, чем было)
+        "   background-color: #90EE90;"
+        "   color: black;"
+        "   border-radius: 5px;"
         "   padding: 0px;"
-        "   border: none;"	   // Нет границы
-        "   font-size: 18px;"  // Размер текста
+        "   border: none;"
+        "   font-size: 18px;"
         "}"
         "QPushButton:hover {"
-        "   background-color: #45a049;"	 // Темно-зеленый при наведении
+        "   background-color: #45a049;"
         "}");
 
     connect(ui->closeButton, &QPushButton::clicked, this, [this] {

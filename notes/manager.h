@@ -12,7 +12,6 @@ class Manager {
     size_t number_of_item = 0;
     QStringList list_of_user_files;
     bool isOpenPrivate;
-    //dialogfornote* dialog;
 
 
     void AddNoteToManager(QPushButton* note, QString name_of_file);
@@ -21,7 +20,6 @@ class Manager {
     void Update(bool sorted_by_data, bool is_private, QString key);
     virtual QString NameForTitle(const QString& folderPath,
                                  const QString& fileName);
-    //void OpenFileWithContent(QPushButton* button);
     void FillIsOpenButton(QPushButton* button, QString folder, bool value);
     void SortedByData();
     void SortedByAlphabet(QString folder, bool is_private, QString key);
@@ -37,21 +35,12 @@ class Manager {
     std::unordered_map<QPushButton*, QString> notes;
     std::unordered_map<QPushButton*, QString> to_do_list;
 
-
-    /*void AddToDoListToManager(QPushButton* to_do_list);
-    void AddDRrawingToManager(QPushButton* draw);*/
-    /*void print();*/
    protected:
     virtual void Initialization();
 
    private:
-    //QVector<QPushButton*> notes;
-
-
     QStringList all_files;
     void RefreshFileList();
-    /*QVector<QPushButton*> to_do_lists;
-    QVector<QPushButton*> drawing;*/
 };
 
 #endif	// MANAGER_H

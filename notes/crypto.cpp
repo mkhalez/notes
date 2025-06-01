@@ -14,18 +14,15 @@ void Crypto::SetKey(QString key) {
 QString Crypto::encryptAES(const QString& plaintext) {
     if (plaintext.length() == 0)
         return "";
-    // Конвертируем входные данные в бинарный формат
     QByteArray plainBytes = plaintext.toUtf8();
     QByteArray passBytes = key.toUtf8();
 
-    // Генерация соли (8 случайных байт)
     QByteArray salt(8, 0);
     if (RAND_bytes((unsigned char*)salt.data(), salt.size()) <= 0) {
         qCritical() << "Salt generation error";
         return "";
     }
 
-    // Генерация ключа и IV
     const EVP_CIPHER* cipher = EVP_aes_256_cbc();
     unsigned char key[EVP_MAX_KEY_LENGTH], iv[EVP_MAX_IV_LENGTH];
 
@@ -36,7 +33,6 @@ QString Crypto::encryptAES(const QString& plaintext) {
         return "";
     }
 
-    // Шифрование
     EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
     EVP_EncryptInit_ex(ctx, cipher, nullptr, key, iv);
 
@@ -52,29 +48,24 @@ QString Crypto::encryptAES(const QString& plaintext) {
     ciphertext.resize(len1 + len2);
     EVP_CIPHER_CTX_free(ctx);
 
-    // Комбинируем соль + шифротекст
     QByteArray result = salt + ciphertext;
 
-    // Конвертируем в Base64 строку
     return QString::fromLatin1(result.toBase64());
 }
 
 QString Crypto::decryptAES(const QString& ciphertext) {
     if (ciphertext == "")
         return "";
-    // Декодируем из Base64
     QByteArray encryptedData = QByteArray::fromBase64(ciphertext.toLatin1());
     if (encryptedData.size() <= 8) {
         qCritical() << "Invalid ciphertext";
         return "";
     }
 
-    // Извлекаем соль и данные
     QByteArray salt = encryptedData.left(8);
     QByteArray data = encryptedData.mid(8);
     QByteArray passBytes = key.toUtf8();
 
-    // Генерация ключа и IV
     const EVP_CIPHER* cipher = EVP_aes_256_cbc();
     unsigned char key[EVP_MAX_KEY_LENGTH], iv[EVP_MAX_IV_LENGTH];
 
@@ -85,7 +76,6 @@ QString Crypto::decryptAES(const QString& ciphertext) {
         return "";
     }
 
-    // Дешифрование
     EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
     EVP_DecryptInit_ex(ctx, cipher, nullptr, key, iv);
 
@@ -100,13 +90,10 @@ QString Crypto::decryptAES(const QString& ciphertext) {
         ctx, (unsigned char*)plaintext.data() + len1, &len2);
     plaintext.resize(len1 + len2);
     EVP_CIPHER_CTX_free(ctx);
-
-    // Проверка успешности дешифрования
     if (final_result <= 0) {
         qCritical() << "Decryption failed. Wrong password?";
         return "";
     }
 
-    // Конвертируем байты обратно в строку
     return QString::fromUtf8(plaintext);
 }

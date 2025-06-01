@@ -34,8 +34,6 @@ class dialogfortodolist : public QWidget {
     QString folder;
 
    private slots:
-    void onItemClicked();
-    void onItemSelectionChanged();
     void AddTask(QString text = "");
     void RemoveAll();
     void CorrectTask();

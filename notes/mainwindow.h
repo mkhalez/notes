@@ -52,7 +52,6 @@ class MainWindow : public QMainWindow {
 
     Manager manager;
     Manager private_manager;
-    //PrivateManager private_manager;
 
     bool isOpenPrivateDialog = false;
     bool isSortedByData = true;
@@ -81,6 +80,5 @@ class MainWindow : public QMainWindow {
     void FilterClick();
     void ShowSortedByAlphabet();
     void ShowSortedByData();
-    /*void AddDrawingHelper();*/
 };
 #endif	// MAINWINDOW_H

@@ -14,10 +14,7 @@ dialogfornote::dialogfornote(QPushButton* button, Manager* manager,
     } else {
         file_manager = new FileManagerForNote();
     }
-    /*for (int i = 0; i < manager->list_of_user_files.length(); i++) {
 
-        qDebug() << manager->list_of_user_files[i];
-    }*/
     this->button = button;
     this->resize(700, 600);
     this->setWindowTitle("Note");
@@ -99,22 +96,22 @@ dialogfornote::dialogfornote(QPushButton* button, Manager* manager,
 
     ui->titleEdit->setStyleSheet(
         "QLineEdit {"
-        "   border: 2px solid gray;"  // Обычная рамка
-        "   border-radius: 5px;"	  // Скругление углов
-        "   padding: 3px;"			  // Отступ текста от краёв
+        "   border: 2px solid gray;"
+        "   border-radius: 5px;"
+        "   padding: 3px;"
         "}"
-        "QLineEdit:focus {"				 // Стиль при фокусе
-        "   border: 2px solid #4CAF50;"	 // Зелёная рамка
+        "QLineEdit:focus {"
+        "   border: 2px solid #4CAF50;"
         "}");
 
     ui->textEdit->setStyleSheet(
         "QTextEdit {"
-        "   border: 2px solid gray;"  // Обычная рамка
-        "   border-radius: 5px;"	  // Скругление углов
-        "   padding: 3px;"			  // Отступ текста от краёв
+        "   border: 2px solid gray;"
+        "   border-radius: 5px;"
+        "   padding: 3px;"
         "}"
-        "QTextEdit:focus {"				 // Стиль при фокусе
-        "   border: 2px solid #4CAF50;"	 // Зелёная рамка
+        "QTextEdit:focus {"
+        "   border: 2px solid #4CAF50;"
         "}");
 }
 

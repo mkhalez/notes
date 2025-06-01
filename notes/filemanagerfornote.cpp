@@ -108,7 +108,7 @@ QStringList FileManagerForNote::ReadFileForToDoList(const QString& folderPath,
     QFile file(folderPath + "/" + fileName);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        return lines;  // Возвращаем пустой список, если файл не открылся
+        return lines;
     }
 
     QTextStream in(&file);
@@ -116,7 +116,7 @@ QStringList FileManagerForNote::ReadFileForToDoList(const QString& folderPath,
 
     while (!in.atEnd()) {
         QString line = in.readLine();
-        if (lineCount >= 2) {  // Пропускаем первые две строки
+        if (lineCount >= 2) {
             lines.append(line);
         }
         lineCount++;

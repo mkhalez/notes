@@ -55,13 +55,17 @@ class MainWindow : public QMainWindow {
     //PrivateManager private_manager;
 
     bool isOpenPrivateDialog = false;
+    bool isSortedByData = true;
+    bool isSearching = false;
 
     QPushButton* private_button;
     QPushButton* searchButton;
 
     bool isAdditing = false;
     QPushButton* add_button;
+    QPushButton* filter_button;
     QMenu* dropdownMenu;
+    QMenu* filterDropMenu;
 
    protected:
     void closeEvent(QCloseEvent* event) override;
@@ -74,6 +78,9 @@ class MainWindow : public QMainWindow {
     void OpenFileWithContent(QPushButton* button, QString name_of_file);
     void AddToDoListHelper();
     void SearchInitialization();
+    void FilterClick();
+    void ShowSortedByAlphabet();
+    void ShowSortedByData();
     /*void AddDrawingHelper();*/
 };
 #endif	// MAINWINDOW_H

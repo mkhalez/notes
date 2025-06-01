@@ -18,10 +18,13 @@ class Manager {
     void AddNoteToManager(QPushButton* note, QString name_of_file);
     void AddToDoListToManager(QPushButton* to_do_list, QString name_of_file);
     void DeleteFile(const QString& folderPath, const QString& fileName);
+    void Update(bool sorted_by_data, bool is_private, QString key);
     virtual QString NameForTitle(const QString& folderPath,
                                  const QString& fileName);
     //void OpenFileWithContent(QPushButton* button);
     void FillIsOpenButton(QPushButton* button, QString folder, bool value);
+    void SortedByData();
+    void SortedByAlphabet(QString folder, bool is_private, QString key);
     virtual void CreateFile(int number, int type, QString folder);
     bool DoHaveFile(QString folder_path, QString name_of_file);
     int ReadFirstLine(QString folder_path, QString name_of_file);

@@ -1,6 +1,7 @@
 #include "manager.h"
 #include <QDir>
 #include <QTextStream>
+#include "crypto.h"
 
 
 Manager::Manager(QString work_folder, bool version) {
@@ -17,7 +18,7 @@ void Manager::Initialization() {
         dir.mkpath(".");
     }
 
-    list_of_user_files = GetListOfFileByCreationTime(work_folder);
+    SortedByData();
     if (list_of_user_files.isEmpty()) {
         number_of_item = 0;
     } else {
@@ -145,6 +146,66 @@ void Manager::DeleteFile(const QString& folderPath, const QString& fileName) {
     if (QFile::exists(filePath)) {
         QFile::remove(filePath);
     }
+}
+
+void Manager::Update(bool sorted_by_data, bool is_private, QString key) {
+    if (sorted_by_data) {
+        SortedByData();
+        return;
+    }
+
+    QDir directory(work_folder);
+
+    QFileInfoList fileInfoList =
+        directory.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
+
+    QStringList fileNames;
+
+
+    for (const QFileInfo& fileInfo : fileInfoList) {
+        fileNames.append(fileInfo.fileName());
+    }
+
+    list_of_user_files = fileNames;
+    SortedByAlphabet(work_folder, is_private, key);
+}
+
+void Manager::SortedByAlphabet(QString folder, bool is_private, QString key) {
+    Crypto crypto;
+    if (is_private)
+        crypto.SetKey(key);
+
+    std::sort(
+        list_of_user_files.begin(), list_of_user_files.end(),
+        [this, folder, is_private, &crypto](QString a, QString b) {
+            QString first_title, second_title;
+            if (is_private) {
+                first_title = crypto.decryptAES(NameForTitle(folder, a));
+                second_title = crypto.decryptAES(NameForTitle(folder, b));
+            } else {
+                first_title = NameForTitle(folder, a);
+                second_title = NameForTitle(folder, b);
+            }
+
+            if (first_title.isEmpty() && ReadFirstLine(folder, a) == 0) {
+                first_title = "New Note";
+            } else if (first_title.isEmpty() && ReadFirstLine(folder, a) == 1) {
+                first_title = "New To-Do List";
+            } else if (second_title.isEmpty() &&
+                       ReadFirstLine(folder, b) == 0) {
+                second_title = "New Note";
+            } else if (second_title.isEmpty() &&
+                       ReadFirstLine(folder, b) == 1) {
+                second_title = "New To-Do List";
+            }
+
+            return first_title < second_title;
+        });
+}
+
+void Manager::SortedByData() {
+
+    list_of_user_files = GetListOfFileByCreationTime(work_folder);
 }
 
 QString Manager::NameForTitle(const QString& folderPath,

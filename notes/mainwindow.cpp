@@ -17,7 +17,9 @@ MainWindow::MainWindow(QWidget* parent)
       manager("data_of_user"),
 
 
-      private_manager("data_of_user/private_data") {
+      private_manager(
+
+          "data_of_user/private_data") {
 
     ui->setupUi(this);
 
@@ -66,6 +68,8 @@ MainWindow::MainWindow(QWidget* parent)
     main_layout->addWidget(searchWidget);
     connect(searchButton, &QPushButton::clicked, this,
             &MainWindow::SearchInitialization);
+    connect(searchLineEdit, &QLineEdit::returnPressed, this,
+            [this]() { SearchInitialization(); });
 
 
     scrollArea = new QScrollArea();
@@ -103,6 +107,24 @@ MainWindow::MainWindow(QWidget* parent)
 
     bottom_layout->addStretch();
 
+    filter_button = new QPushButton(this);
+    filter_button->setFixedSize(50, 50);
+    filter_button->setStyleSheet(
+        "QPushButton {"
+        "   background-color: #90EE90;"
+        "   color: black;"
+        "   border-radius: 10px;"
+        "   padding: 0px;"
+        "   border: none;"
+        "}"
+        "QPushButton:hover { background-color: #45a049; }");
+    QPixmap pixmap_filter(
+        "data_of_program/photo_for_private_button/filter.svg");
+    QIcon icon_filter(pixmap_filter.scaled(70, 70, Qt::KeepAspectRatio,
+                                           Qt::SmoothTransformation));
+    filter_button->setIcon(icon_filter);
+    bottom_layout->addWidget(filter_button, 0, Qt::AlignRight);
+
     add_button = new QPushButton(this);
     add_button->setFixedSize(50, 50);
     add_button->setText("+");
@@ -116,6 +138,46 @@ MainWindow::MainWindow(QWidget* parent)
         "}"
         "QPushButton:hover { background-color: #45a049; }");
     bottom_layout->addWidget(add_button, 0, Qt::AlignRight);
+
+    filterDropMenu = new QMenu(this);
+    filterDropMenu->setStyleSheet(
+        "QMenu {"
+        "    background-color: transparent;"  // Прозрачный фон самого меню
+        "    padding: 5px;"					  // Отступ вокруг всего меню
+        "}"
+
+        "QMenu::item {"
+        "    background-color: #008000;"  // Зелёный цвет фона
+        "    border: 2px solid #45a049;"  // Контур
+        "    border-radius: 15px;"	// Сильное закругление (цилиндрический эффект)
+        "    margin: 4px 2px;"		// Вертикальные отступы между пунктами
+        "    padding: 8px 20px 8px 15px;"  // Большие внутренние отступы (вытянутость)
+        "    min-width: 100px;"			   // Минимальная ширина
+        "    font-size: 17px;"			   // Размер шрифта
+        "    text-align: left;"
+        "    color: white;"	 // Цвет текста
+        "}"
+
+        "QMenu::item:selected {"
+        "    background-color: #006400;"  // Темнее при выборе
+        "    border: 2px solid #2d7d32;"  // Контур при выборе
+        "}"
+
+        "QMenu::item:pressed {"
+        "    background-color: #004d00;"  // Ещё темнее при нажатии
+        "}");
+
+
+    QAction* alphabetAction = filterDropMenu->addAction("alphabet");
+    QAction* dataAction = filterDropMenu->addAction("data");
+
+    connect(filter_button, &QPushButton::clicked, this,
+            &MainWindow::FilterClick);
+    connect(alphabetAction, &QAction::triggered, this,
+            &MainWindow::ShowSortedByAlphabet);
+    connect(dataAction, &QAction::triggered, this,
+            &MainWindow::ShowSortedByData);
+
 
     dropdownMenu = new QMenu(this);
     dropdownMenu->setStyleSheet(
@@ -145,6 +207,10 @@ MainWindow::MainWindow(QWidget* parent)
         "    background-color: #004d00;"  // Ещё темнее при нажатии
         "}");
 
+    dropdownMenu->setWindowFlags(dropdownMenu->windowFlags() |
+                                 Qt::FramelessWindowHint);
+    dropdownMenu->setAttribute(Qt::WA_TranslucentBackground);
+
     QAction* noteAction = dropdownMenu->addAction("note");
     QAction* todoAction = dropdownMenu->addAction("to-do list");
 
@@ -156,7 +222,6 @@ MainWindow::MainWindow(QWidget* parent)
             &MainWindow::PrivateClick);
 
     connect(add_button, &QPushButton::clicked, this, &MainWindow::AddClick);
-
     connect(noteAction, &QAction::triggered, this, &MainWindow::AddNoteHelper);
     connect(todoAction, &QAction::triggered, this,
             &MainWindow::AddToDoListHelper);
@@ -261,6 +326,10 @@ void MainWindow::showContextMenu(const QPoint& pos) {
     if (!button)
         return;
 
+    QWidget* container = qobject_cast<QWidget*>(button->parent());
+    if (!container)
+        return;
+
     QMenu contextMenu(this);
 
     // Установка стиля для меню
@@ -301,42 +370,55 @@ void MainWindow::showContextMenu(const QPoint& pos) {
     QAction* selectedAction = contextMenu.exec(button->mapToGlobal(pos));
     if (selectedAction == deleteAction) {
 
-        int buttonIndex = buttons_layout->indexOf(button);
         auto& current_manager =
             private_manager.isOpenPrivate ? private_manager : manager;
-        if (buttonIndex != -1 && !current_manager.is_open_button[button]) {
-            // 2. Удалить кнопку из layout
-            buttons_layout->takeAt(buttonIndex);
 
-            // 3. Удалить саму кнопку
-            button->deleteLater();
 
-            auto& current_manager =
-                private_manager.isOpenPrivate ? private_manager : manager;
+        if (!current_manager.is_open_button[button]) {
 
-            QString name_of_file =
-                current_manager.GetNameOfFileThanksPtr(button);
-            manager.DeleteFile(private_manager.isOpenPrivate
-                                   ? "data_of_user/private_data"
-                                   : "data_of_user",
-                               name_of_file);
+            int containerIndex = buttons_layout->indexOf(container);
+            if (containerIndex != -1) {
+                // 2. Удаляем контейнер из layout
+                QLayoutItem* item = buttons_layout->takeAt(containerIndex);
+
+                // 3. Удаляем файл
+                QString name_of_file =
+                    current_manager.GetNameOfFileThanksPtr(button);
+                manager.DeleteFile(private_manager.isOpenPrivate
+                                       ? "data_of_user/private_data"
+                                       : "data_of_user",
+                                   name_of_file);
+
+                // 4. Удаляем контейнер и все его дочерние виджеты
+                if (item) {
+                    item->widget()->deleteLater();
+                    delete item;
+                }
+            }
         }
     }
 }
 
 void MainWindow::ClearButton() {
-    // Удаляем все виджеты-кнопки из layout, кроме системных кнопок (если нужно)
     QLayoutItem* item;
     while ((item = buttons_layout->takeAt(0)) != nullptr) {
         if (item->widget()) {
-            QPushButton* button = qobject_cast<QPushButton*>(item->widget());
-            // Пропускаем системные кнопки (private_button, add_button и т.д.)
-            if (button && button != private_button && button != add_button &&
-                button != searchButton) {
-                item->widget()->deleteLater();	// Удаляем только с UI
+            // Пытаемся получить контейнер (QWidget)
+            QWidget* container = qobject_cast<QWidget*>(item->widget());
+            if (container) {
+                // Ищем кнопку внутри контейнера
+                QPushButton* button = container->findChild<QPushButton*>();
+
+                // Проверяем, не является ли это системной кнопкой
+                if (button && button != private_button &&
+                    button != add_button && button != searchButton) {
+                    // Удаляем контейнер и все его содержимое
+                    container->deleteLater();
+                }
+                // Если это системная кнопка, не удаляем её
             }
         }
-        delete item;
+        delete item;  // Удаляем QLayoutItem
     }
 }
 
@@ -344,6 +426,8 @@ void MainWindow::Initialization() {
     ClearButton();
     auto& current_manager =
         private_manager.isOpenPrivate ? private_manager : manager;
+    current_manager.Update(isSortedByData, private_manager.isOpenPrivate,
+                           crypto.GetKey());
     if (current_manager.number_of_item > 0) {
         buttons_layout->addStretch();
     }
@@ -366,29 +450,65 @@ void MainWindow::Initialization() {
             name_for_button = crypto.decryptAES(name_for_button);
         }
 
+        // Создаем контейнер для кнопки с зеленой полосой
+        QWidget* button_container = new QWidget(buttons_container);
+        QHBoxLayout* container_layout = new QHBoxLayout(button_container);
+        container_layout->setContentsMargins(0, 0, 0, 0);
+        container_layout->setSpacing(0);
+
+        // Зеленая полоса слева (3 пикселя шириной)
+        QWidget* green_space = new QWidget(button_container);
+        green_space->setFixedWidth(5);
+
+        container_layout->addWidget(green_space);
+
         QPushButton* button = nullptr;
 
         if (name_for_button.isEmpty() && type_of_button == 0) {
-            button = new QPushButton(QString("New Note"), buttons_container);
-            buttons_layout->insertWidget(buttons_layout->count() - 1, button);
+            button = new QPushButton(QString("New Note"), button_container);
+            green_space->setStyleSheet("background-color: #006400;");
+            button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+            container_layout->addWidget(button);
+
+            // Добавляем контейнер в основной layout
+            buttons_layout->insertWidget(buttons_layout->count() - 1,
+                                         button_container);
             current_manager.AddNoteToManager(
                 button, current_manager.list_of_user_files[i]);
         } else if (name_for_button.isEmpty() && type_of_button == 1) {
             button =
-                new QPushButton(QString("New To-Do List"), buttons_container);
-            buttons_layout->insertWidget(buttons_layout->count() - 1, button);
+                new QPushButton(QString("New To-Do List"), button_container);
+            green_space->setStyleSheet("background-color: #2E8B57;");
+            button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+            container_layout->addWidget(button);
+
+            // Добавляем контейнер в основной layout
+            buttons_layout->insertWidget(buttons_layout->count() - 1,
+                                         button_container);
             current_manager.AddToDoListToManager(
                 button, current_manager.list_of_user_files[i]);
         } else if (!name_for_button.isEmpty() && type_of_button == 0) {
             button =
-                new QPushButton(QString(name_for_button), buttons_container);
-            buttons_layout->insertWidget(buttons_layout->count() - 1, button);
+                new QPushButton(QString(name_for_button), button_container);
+            green_space->setStyleSheet("background-color: #006400;");
+            button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+            container_layout->addWidget(button);
+
+            // Добавляем контейнер в основной layout
+            buttons_layout->insertWidget(buttons_layout->count() - 1,
+                                         button_container);
             current_manager.AddNoteToManager(
                 button, current_manager.list_of_user_files[i]);
         } else if (!name_for_button.isEmpty() && type_of_button == 1) {
             button =
-                new QPushButton(QString(name_for_button), buttons_container);
-            buttons_layout->insertWidget(buttons_layout->count() - 1, button);
+                new QPushButton(QString(name_for_button), button_container);
+            green_space->setStyleSheet("background-color: #2E8B57;");
+            button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+            container_layout->addWidget(button);
+
+            // Добавляем контейнер в основной layout
+            buttons_layout->insertWidget(buttons_layout->count() - 1,
+                                         button_container);
             current_manager.AddToDoListToManager(
                 button, current_manager.list_of_user_files[i]);
         }
@@ -434,16 +554,14 @@ void MainWindow::Initialization() {
 }
 
 void MainWindow::SearchInitialization() {
-    if (searchButton->text() == "×") {
-        Initialization();
+    if (isSearching) {
         searchButton->setText("🔍");
-
+        isSearching = false;
         searchButton->setStyleSheet(
             "QPushButton {"
             "   background-color: #90EE90;"
             "   color: black;"
             "   border-radius: 10px;"
-
             "   padding: 0px;"
             "   border: none;"
             "   font-size: 25px;"
@@ -455,6 +573,7 @@ void MainWindow::SearchInitialization() {
         searchLineEdit->setFont(font);
         searchLineEdit->clear();
         searchLineEdit->setFocus();
+        Initialization();
         return;
     }
 
@@ -465,21 +584,34 @@ void MainWindow::SearchInitialization() {
     Search search;
     int i = 0;
     while (i < buttons_layout->count()) {
-
         QLayoutItem* item = buttons_layout->itemAt(i);
         if (item && item->widget()) {
-            QPushButton* button = qobject_cast<QPushButton*>(item->widget());
-            /*qDebug() << button->text();
-            qDebug() << search.Distance(text_to_search, button->text());*/
-            if (button && button != private_button && button != add_button &&
-                button != searchButton &&
-                (search.Distance(text_to_search, button->text()) > 3 ||
-                 search.Distance(text_to_search, button->text()) == 3 &&
-                     search.TheSameString(text_to_search, button->text()) ==
-                         false)) {
-                QLayoutItem* itemToDelete = buttons_layout->takeAt(i);
-                itemToDelete->widget()->deleteLater();
-                delete itemToDelete;
+            // Получаем контейнер (QWidget), а не кнопку напрямую
+            QWidget* container = qobject_cast<QWidget*>(item->widget());
+            if (container) {
+                // Находим кнопку внутри контейнера
+                QPushButton* button = container->findChild<QPushButton*>();
+                if (button && button != private_button &&
+                    button != add_button && button != searchButton &&
+                    (search.Distance(text_to_search, button->text()) > 3 ||
+                     (search.Distance(text_to_search, button->text()) == 3 &&
+                      !search.TheSameString(text_to_search, button->text())))) {
+
+                    // Удаляем весь контейнер (с кнопкой и зеленой полосой)
+                    QLayoutItem* itemToDelete = buttons_layout->takeAt(i);
+                    if (itemToDelete) {
+                        // Удаляем из менеджера, если нужно
+                        auto& current_manager = private_manager.isOpenPrivate
+                                                    ? private_manager
+                                                    : manager;
+
+
+                        itemToDelete->widget()->deleteLater();
+                        delete itemToDelete;
+                    }
+                } else {
+                    i++;
+                }
             } else {
                 i++;
             }
@@ -487,13 +619,14 @@ void MainWindow::SearchInitialization() {
             i++;
         }
     }
+
     searchButton->setText("×");
+    isSearching = true;
     searchButton->setStyleSheet(
         "QPushButton {"
         "   background-color: #90EE90;"
         "   color: black;"
         "   border-radius: 10px;"
-
         "   padding: 0px;"
         "   border: none;"
         "   font-size: 25px;"
@@ -505,6 +638,61 @@ void MainWindow::SearchInitialization() {
     searchLineEdit->setFocus();
 }
 
+void MainWindow::FilterClick() {
+    // 1. Получаем правый верхний угол кнопки в глобальных координатах
+    QPoint buttonTopRight =
+        add_button->mapToGlobal(QPoint(add_button->width(), 0));
+
+    // 2. Вычисляем позицию меню:
+    //    - Смещаем влево на ширину меню (чтобы не выходило за экран)
+    //    - Смещаем вверх на высоту меню + дополнительный отступ
+    int menuWidth = filterDropMenu->sizeHint().width();
+    int menuHeight = filterDropMenu->sizeHint().height();
+    QPoint menuPos(buttonTopRight.x() - menuWidth,	  // Смещение влево
+                   buttonTopRight.y() - menuHeight);  // Смещение вверх
+
+    // 3. Открываем меню с "ступенчатым" смещением
+    filterDropMenu->exec(menuPos);
+}
+
+void MainWindow::ShowSortedByAlphabet() {
+    if (!isSortedByData)
+        return;
+
+
+    auto& current_manager =
+        private_manager.isOpenPrivate ? private_manager : manager;
+    current_manager.SortedByAlphabet(
+        private_manager.isOpenPrivate ? "data_of_user/private_data"
+                                      : "data_of_user",
+        private_manager.isOpenPrivate, crypto.GetKey());
+    isSortedByData = !isSortedByData;
+    if (isSearching) {
+        isSearching = !isSearching;
+        Initialization();
+        SearchInitialization();
+    } else {
+        Initialization();
+    }
+}
+
+void MainWindow::ShowSortedByData() {
+    if (isSortedByData)
+        return;
+
+    auto& current_manager =
+        private_manager.isOpenPrivate ? private_manager : manager;
+    current_manager.SortedByData();
+    isSortedByData = !isSortedByData;
+    if (isSearching) {
+        isSearching = !isSearching;
+        Initialization();
+        SearchInitialization();
+    } else {
+        Initialization();
+    }
+}
+
 void MainWindow::closeEvent(QCloseEvent* event) {
     if (dialog && dialog->isVisible()) {
         dialog->close();
@@ -512,6 +700,10 @@ void MainWindow::closeEvent(QCloseEvent* event) {
     if (dialog_registration) {
         dialog_registration->close();
     }
+    if (dialog_authentication && isOpenPrivateDialog) {
+        dialog_authentication->close();
+    }
+
     QMainWindow::closeEvent(event);
 }
 
@@ -636,9 +828,25 @@ void MainWindow::AddNoteHelper() {
         buttons_layout->addStretch();
     }
 
-    QPushButton* button =
-        new QPushButton(QString("New Note"), buttons_container);
-    buttons_layout->insertWidget(buttons_layout->count() - 1, button);
+    // Создаем контейнер для кнопки
+    QWidget* button_container = new QWidget(buttons_container);
+    QHBoxLayout* container_layout = new QHBoxLayout(button_container);
+    container_layout->setContentsMargins(0, 0, 0, 0);
+    container_layout->setSpacing(0);
+
+    // Добавляем зеленую полосу слева
+    QWidget* green_space = new QWidget(button_container);
+    green_space->setFixedWidth(5);
+    green_space->setStyleSheet("background-color: #006400;");
+    container_layout->addWidget(green_space);
+
+    // Создаем саму кнопку
+    QPushButton* button = new QPushButton("New Note", button_container);
+    button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    container_layout->addWidget(button);
+
+    // Добавляем контейнер в основной layout перед stretch
+    buttons_layout->insertWidget(buttons_layout->count() - 1, button_container);
 
     int currentNumber = current_manager.number_of_item;
     currentNumber++;
@@ -762,9 +970,25 @@ void MainWindow::AddToDoListHelper() {
         buttons_layout->addStretch();
     }
 
-    QPushButton* button =
-        new QPushButton(QString("New To-Do List"), buttons_container);
-    buttons_layout->insertWidget(buttons_layout->count() - 1, button);
+    // Создаем контейнер для кнопки
+    QWidget* button_container = new QWidget(buttons_container);
+    QHBoxLayout* container_layout = new QHBoxLayout(button_container);
+    container_layout->setContentsMargins(0, 0, 0, 0);
+    container_layout->setSpacing(0);
+
+    // Добавляем зеленую полосу слева
+    QWidget* green_space = new QWidget(button_container);
+    green_space->setFixedWidth(5);
+    green_space->setStyleSheet("background-color: #2E8B57;");
+    container_layout->addWidget(green_space);
+
+    // Создаем саму кнопку
+    QPushButton* button = new QPushButton("New To-Do List", button_container);
+    button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    container_layout->addWidget(button);
+
+    // Добавляем контейнер в основной layout перед stretch
+    buttons_layout->insertWidget(buttons_layout->count() - 1, button_container);
 
     int currentNumber = current_manager.number_of_item;
     currentNumber++;

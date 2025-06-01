@@ -68,6 +68,8 @@ authentication::authentication(QWidget* parent)
             &authentication::CheckUser);
     connect(ui->checkPasswordButton, &QPushButton::clicked, this,
             &authentication::ShowPassword);
+    connect(ui->passwordEdit, &QLineEdit::returnPressed, this,
+            [this]() { CheckUser(); });
 }
 
 authentication::~authentication() {

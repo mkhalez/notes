@@ -16,7 +16,7 @@ class Crypto {
     QString decryptAES(const QString& ciphertext);
 
    private:
-    QString key;
+    QString key = "";
 };
 
 #endif	// CRYPTO_H

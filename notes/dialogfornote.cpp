@@ -28,7 +28,6 @@ dialogfornote::dialogfornote(QPushButton* button, Manager* manager,
 
     ui->textEdit->setHtml(
         file_manager->ReadFile(folder, manager->notes[button]));
-
     if (manager->isOpenPrivate) {
         ui->titleEdit->setText(crypto->decryptAES(
             manager->NameForTitle(folder, manager->notes[button])));
@@ -65,6 +64,8 @@ dialogfornote::dialogfornote(QPushButton* button, Manager* manager,
             &dialogfornote::onCrossOutClicked);
     connect(ui->redButton, &QPushButton::clicked, this,
             &dialogfornote::onRedClicked);
+    connect(ui->titleEdit, &QLineEdit::returnPressed, this,
+            [this]() { ui->textEdit->setFocus(); });
 
     ui->underlinedButton->setStyleSheet(
         "QPushButton {"

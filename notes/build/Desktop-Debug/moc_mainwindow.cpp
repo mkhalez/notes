@@ -7,7 +7,7 @@
 *****************************************************************************/
 
 #include <memory>
-#include "../../../../try_to_best_ui/notes/notes/mainwindow.h"
+#include "../../../../clone_project/mind_storage_final/notes/notes/mainwindow.h"
 #include <QtGui/qtextcursor.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)

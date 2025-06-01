@@ -7,7 +7,7 @@
 *****************************************************************************/
 
 #include <memory>
-#include "../../../../try_to_best_ui/notes/notes/registration.h"
+#include "../../../../clone_project/mind_storage_final/notes/notes/registration.h"
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'registration.h' doesn't include <QObject>."
